@@ -4,3 +4,14 @@ body {
     margin: 0;
     font-family: Roboto, Verdana, Geneva, Tahoma, sans-serif;
 }
+
+h2 {
+    font-size: 2em;
+    text-align: right;
+
+    display: block;
+    color: #333;
+    font-weight: bolder;
+
+    border-bottom: 3px solid #333;
+}

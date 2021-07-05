@@ -1,21 +1,68 @@
 .face-front {
     width: 100%;
-    height: 75%;
+    height: 65%;
     position: absolute;
 
     min-height: 300px;
 
-    background-color: yellow;
+    background: rgb(38,89,110);
+    background: linear-gradient(166deg, rgba(38,89,110,1) 0%, rgba(9,121,97,1) 35%, rgba(210,244,135,1) 100%);
+
+    overflow: hidden;
 
     .face-title {
         position: absolute;
-        bottom: 0;
+        bottom: 50px;
 
         padding-left: 0.5em;
 
         font-size: 8em;
         font-weight: bolder;
         line-height: 0.7em;
+
+        margin: 0;
+    }
+
+    .face-pointer-cont {
+        position: absolute;
+        bottom: 0px;
+
+        height: 50px;
+        width: 100%;
+
+        overflow: hidden;
+
+        .face-pointer {
+            background-color: #fff;
+            position: absolute;
+
+            width: 100px;
+            height: 100px;
+            transform: rotate(45deg);
+
+            &.pointer-left { left: calc(50% - 120px); }
+            &.pointer-right { right: calc(50% - 120px); }
+        }
+
+        .bar-left, .bar-right {
+            background-color: #fff;
+            position: absolute;
+
+            height: 50px;
+            width: calc(50% - 80px);
+        }
+
+        .bar-left { left: 0; }
+        .bar-right { right: 0; }
     }
 }
-    
+
+.profile-cont {
+    position: absolute;
+    top: max(65%, 300px);
+
+    width: 100%;
+    padding: 2em 8em;
+
+    box-sizing: border-box;
+}

@@ -3,11 +3,23 @@
     right: 20px;
     top: 20px;
 
+    z-index: 1;
+
     .fab {
         font-size: 2em;
 
         &.fa-linkedin {
             color: rgb(10, 102, 194);
+
+            box-shadow: 1px 1px 2px #666;
+            background-color: #eee;
+            padding: 0px 2px;
+
+            &:hover {
+                box-shadow: 1px 1px 4px #666;
+                background-color: #fff;
+            }
         }
     }
 }
+
