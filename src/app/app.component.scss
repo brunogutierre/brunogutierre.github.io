@@ -1,0 +1,13 @@
+.float-icons {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+
+    .fab {
+        font-size: 2em;
+
+        &.fa-linkedin {
+            color: rgb(10, 102, 194);
+        }
+    }
+}
