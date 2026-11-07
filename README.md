@@ -55,6 +55,34 @@ page, an HTML file declares the wrong `lang`, a page is a meta-refresh redirect 
 link, hreflang URL or asset does not resolve to a served file, or a folder would shadow
 `/AdvancedSudoku/` (published on this domain by another repository).
 
+## Design
+
+- **Direction: "Canopy".** An evolution of the teal → green → lime gradient of the 2021 site, with
+  the downward chevron of its banner as the brand motif (favicon, brand mark, current-section
+  marker, labels and the notch at the bottom of the home hero). Deep teal is the accent in the
+  light theme and lime in the dark one; lime is only ever a fill behind dark text in light.
+- **Tokens** live in [`src/styles/_tokens.scss`](src/styles/_tokens.scss) as CSS custom
+  properties: surfaces, text, accent, the hero gradient stops, a fluid type scale sized so French
+  fits at 360px, 4px spacing, radii, elevation and motion. Colors use `light-dark()`, so a theme
+  is just `color-scheme`; `data-theme` on `<html>` pins light or dark and its absence follows the
+  system. The token names match the author's Advanced Sudoku, so both projects read as related.
+- **Theme:** the toggle switches to the other theme; switching back to the system's theme forgets
+  the choice. An inline script applies the stored choice (`bgsite:v1:theme`) before first paint.
+  The prerendered HTML has no theme state: icons switch through CSS and `aria-pressed` is set
+  after the first client render, so hydration never sees a different DOM.
+- **Fonts:** [Bricolage Grotesque](https://fonts.google.com/specimen/Bricolage+Grotesque)
+  (display, with its optical-size axis), [Inter](https://rsms.me/inter/) (text) and
+  [JetBrains Mono](https://www.jetbrains.com/lp/mono/) (labels), variable woff2 files from
+  Fontsource, self-hosted in `public/fonts/` with their SIL Open Font License files. Latin and
+  latin-ext subsets load by `unicode-range`; the display font is preloaded.
+- **Icons:** inline SVG with `currentColor`, always decorative: [Lucide](https://lucide.dev)
+  (ISC) and the GitHub and LinkedIn marks from [Bootstrap Icons](https://icons.getbootstrap.com)
+  (MIT).
+- **Accessibility:** WCAG AA contrast for every text pair in both themes, visible
+  `:focus-visible` outline (white inside the hero), 44px targets, skip link, landmarks,
+  `prefers-reduced-motion` (no gradient drift, no transitions), `prefers-contrast: more` and
+  `forced-colors` support. No horizontal scroll from 320px.
+
 ## Deployment
 
 GitHub Pages publishes the site from GitHub Actions, not from a branch folder:

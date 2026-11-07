@@ -5,8 +5,27 @@
     <title>Bruno Gutierre</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Bruno Gutierre, frontend and fullstack developer." />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- Apply the stored theme before first paint. Same key as ThemeService. -->
+    <script>
+      try {
+        var root = document.documentElement;
+        root.dataset.js = '';
+        var t = localStorage.getItem('bgsite:v1:theme');
+        if (t === 'light' || t === 'dark') root.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f4f8f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a1a1c" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="favicon.ico" sizes="32x32" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="/fonts/bricolage-grotesque-latin-opsz-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
   </head>
   <body>
     <app-root></app-root>

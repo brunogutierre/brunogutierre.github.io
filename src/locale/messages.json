@@ -12,16 +12,24 @@
     "nav.blog": "Blog",
     "seo.blog.description": "Notes by Bruno Gutierre on lessons learned while building software.",
     "shell.skip": "Skip to content",
+    "blog.eyebrow": "03 / blog",
     "blog.soon": "Coming soon: notes on what I learn from each project.",
-    "experience.soon": "Coming soon: my professional timeline and a printable CV.",
-    "home.role": "Frontend and fullstack developer: Angular, Java and, lately, Python.",
+    "experience.eyebrow": "02 / experience",
+    "experience.soon": " Coming soon: my professional timeline and a printable CV. ",
+    "home.greeting": "Hello, I'm",
+    "home.role": " Frontend and fullstack developer: Angular, Java and, lately, Python. ",
+    "home.ctaProjects": "See projects",
+    "home.statusEyebrow": "00 / status",
     "home.construction": "The new site is under construction.",
+    "notFound.eyebrow": "404 / not found",
     "notFound.title": "Page not found",
-    "notFound.text": "The page you are looking for does not exist or has moved.",
+    "notFound.text": " The page you are looking for does not exist or has moved. ",
     "notFound.home": "Back to the home page",
+    "projects.eyebrow": "01 / projects",
     "projects.soon": " Coming soon: the projects I build to learn and to show what I can do. ",
     "shell.languages": "Languages",
     "footer.email": "E-mail",
-    "shell.nav": "Main"
+    "shell.nav": "Main",
+    "theme.dark": "Dark theme"
   }
 }

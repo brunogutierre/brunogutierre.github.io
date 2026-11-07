@@ -56,7 +56,12 @@
             "polyfills": [
               "@angular/localize/init"
             ],
-            "i18nMissingTranslation": "error"
+            "i18nMissingTranslation": "error",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/styles"
+              ]
+            }
           },
           "configurations": {
             "production": {

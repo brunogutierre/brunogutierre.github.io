@@ -1,0 +1,59 @@
+// Page layout pieces shared by every page.
+.page {
+  display: block; // also used as a host class on page components
+  inline-size: min(100% - 2 * var(--page-pad), var(--content-max));
+  margin-inline: auto;
+  padding-block: clamp(3rem, 2rem + 4vw, 6rem);
+}
+
+.page-header {
+  display: grid;
+  gap: var(--sp-4);
+  margin-block-end: var(--sp-7);
+
+  h1 {
+    font-size: var(--fs-3xl);
+  }
+}
+
+// Mono metadata label: "01 / projects", preceded by a chevron
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--text-muted);
+  font: var(--fw-medium) var(--fs-xs) / var(--lh-snug) var(--font-mono);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+
+  app-icon {
+    --icon-size: 14px;
+    --icon-stroke: 3;
+    color: var(--primary);
+  }
+}
+
+.lead {
+  max-inline-size: 60ch;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+}
+
+// Gradient tile with a white chevron: the brand mark in the header and footer
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(166deg, var(--hero-1), var(--hero-2) 60%, var(--hero-3));
+  color: #fff;
+
+  app-icon {
+    --icon-size: 18px;
+    --icon-stroke: 3;
+  }
+}

@@ -26,6 +26,47 @@ import { injectCurrentUrl } from '../core/routing/current-url';
       </ul>
     </nav>
   `,
+  styles: `
+    @use 'breakpoints' as *;
+
+    ul {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      list-style: none;
+      overflow: hidden;
+    }
+
+    a {
+      display: grid;
+      place-items: center;
+      inline-size: var(--target);
+      block-size: 42px;
+      color: var(--text-muted);
+      font: var(--fw-medium) var(--fs-sm) / 1 var(--font-mono);
+      text-decoration: none;
+      text-transform: uppercase;
+      outline-offset: -3px; // the group clips its corners: keep the focus ring inside
+
+      &:hover {
+        background: var(--surface-2);
+        color: var(--text);
+      }
+
+      &[aria-current] {
+        background: var(--primary-tint);
+        color: var(--primary);
+      }
+    }
+
+    @media (max-width: $bp-xs - 1px) {
+      a {
+        inline-size: 40px;
+      }
+    }
+  `,
 })
 export class LanguageSwitcher {
   private readonly current = inject(CURRENT_LOCALE);

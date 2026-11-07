@@ -1,0 +1,120 @@
+@use 'breakpoints' as *;
+
+:host {
+  display: block;
+}
+
+.site-header {
+  display: grid;
+  grid-template: 'brand tools' 56px 'nav nav' 44px / 1fr auto;
+  align-items: center;
+  column-gap: var(--sp-4);
+  padding-inline: var(--page-pad);
+  border-block-end: 1px solid var(--border);
+  background: var(--header-bg);
+}
+
+.brand {
+  grid-area: brand;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  justify-self: start;
+  min-block-size: var(--target);
+  color: var(--text);
+  font: var(--fw-bold) var(--fs-lg) / 1 var(--font-display);
+  letter-spacing: var(--tracking-tight);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.main-nav {
+  grid-area: nav;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 0 -12px; // labels line up with the brand
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--target);
+    padding-inline: 12px;
+    color: var(--text-muted);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+
+    &:hover,
+    &.active {
+      color: var(--text);
+    }
+
+    // the brand chevron marks the current section
+    &.active::after {
+      content: '';
+      position: absolute;
+      inset-block-end: 4px;
+      inset-inline-start: calc(50% - 5px);
+      inline-size: 10px;
+      block-size: 6px;
+      background: var(--primary);
+      clip-path: polygon(0 0, 25% 0, 50% 50%, 75% 0, 100% 0, 50% 100%);
+    }
+  }
+}
+
+.tools {
+  grid-area: tools;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+@media (max-width: $bp-xs - 1px) {
+  .brand {
+    font-size: var(--fs-md);
+  }
+}
+
+@media (max-width: 359px) {
+  .site-header {
+    grid-template: 'brand' 'tools' 'nav' / 1fr;
+  }
+
+  .tools {
+    padding-block-end: var(--sp-2);
+  }
+}
+
+@media (min-width: $bp-md) {
+  :host {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-header);
+  }
+
+  .site-header {
+    grid-template: 'brand nav tools' var(--header-h) / auto 1fr auto;
+    backdrop-filter: blur(12px);
+  }
+
+  .main-nav ul {
+    justify-content: flex-end;
+    margin: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .main-nav a.active {
+    text-decoration: underline 2px;
+    text-underline-offset: 0.3em;
+  }
+}
