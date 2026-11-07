@@ -28,5 +28,49 @@
     }
   </header>
 
+  @if (sections().length) {
+    <!-- "_toc": heading ids made from post titles never contain "_" -->
+    <nav class="toc" aria-labelledby="_toc">
+      <h2 id="_toc" i18n="@@post.toc">On this page</h2>
+      <ol>
+        @for (section of sections(); track section.entry.id) {
+          <li>
+            <a [routerLink]="[]" [fragment]="section.entry.id">{{ section.entry.text }}</a>
+            @if (section.children.length) {
+              <ol>
+                @for (child of section.children; track child.id) {
+                  <li>
+                    <a [routerLink]="[]" [fragment]="child.id">{{ child.text }}</a>
+                  </li>
+                }
+              </ol>
+            }
+          </li>
+        }
+      </ol>
+    </nav>
+  }
+
   <app-post-body [html]="post().content.html" [url]="url()" />
 </article>
+
+@if (neighbors().older || neighbors().newer) {
+  <nav class="neighbors" aria-label="More posts" i18n-aria-label="@@post.more">
+    @if (neighbors().older; as older) {
+      <a class="older" [routerLink]="['/blog', older.slug]">
+        <span class="direction">
+          <app-icon name="arrow-left" /><span i18n="@@post.older">Older post</span>
+        </span>
+        <span class="title">{{ older.title }}</span>
+      </a>
+    }
+    @if (neighbors().newer; as newer) {
+      <a class="newer" [routerLink]="['/blog', newer.slug]">
+        <span class="direction">
+          <span i18n="@@post.newer">Newer post</span><app-icon name="arrow-right" />
+        </span>
+        <span class="title">{{ newer.title }}</span>
+      </a>
+    }
+  </nav>
+}
