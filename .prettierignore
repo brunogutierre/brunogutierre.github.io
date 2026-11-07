@@ -1,0 +1,9 @@
+dist
+coverage
+.angular
+node_modules
+package-lock.json
+# Formatted by the Angular CLI; kept out of Prettier to avoid noisy reflows
+angular.json
+# The 2021 build, still deployed until the new app takes over
+docs

@@ -1,17 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
-
+// Global styles. Design tokens, fonts and themes arrive with the design system.
 body {
-    margin: 0;
-    font-family: Roboto, Verdana, Geneva, Tahoma, sans-serif;
-}
-
-h2 {
-    font-size: 2em;
-    text-align: right;
-
-    display: block;
-    color: #333;
-    font-weight: bolder;
-
-    border-bottom: 3px solid #333;
+  margin: 0;
+  font-family: system-ui, sans-serif;
 }
