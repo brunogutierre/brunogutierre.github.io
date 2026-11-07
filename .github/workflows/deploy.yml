@@ -1,0 +1,59 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; never cancel a deployment that is already running.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  SITE_DIR: docs
+  ASSETLINKS_SOURCE: docs/.well-known/assetlinks.json
+  ASSETLINKS_URL: https://brunogutierre.github.io/.well-known/assetlinks.json
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      # The Advanced Sudoku Android app verifies its App Links against this file:
+      # never publish a site without it.
+      - name: Check Android asset links
+        run: node scripts/check-assetlinks.mjs "$SITE_DIR" --source "$ASSETLINKS_SOURCE"
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: ${{ env.SITE_DIR }}
+          # Without this, dot folders are left out of the artifact and /.well-known/ disappears.
+          include-hidden-files: true
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+  verify:
+    name: Verify live asset links
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: scripts/verify-live-assetlinks.sh "$ASSETLINKS_URL" "$ASSETLINKS_SOURCE"

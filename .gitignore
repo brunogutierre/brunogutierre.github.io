@@ -44,3 +44,9 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Local only: Claude Code configuration and the personal manual
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+manual/

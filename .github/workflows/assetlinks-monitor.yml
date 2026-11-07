@@ -1,0 +1,25 @@
+name: Asset links monitor
+
+# Weekly check that the live site still serves the Advanced Sudoku asset links, independent of
+# deployments (catches Pages settings changes, a custom domain being added, CDN problems).
+# GitHub disables scheduled workflows after 60 days without repository activity: re-enable it
+# in the Actions tab if that happens.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify live asset links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: >-
+          scripts/verify-live-assetlinks.sh
+          https://brunogutierre.github.io/.well-known/assetlinks.json
+          docs/.well-known/assetlinks.json
+          6 30
