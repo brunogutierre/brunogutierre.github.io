@@ -1,0 +1,73 @@
+// A ruled list rather than cards: posts are text, and the titles carry the page.
+.posts {
+  display: grid;
+  max-inline-size: 48rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    padding-block: var(--sp-6);
+    border-block-start: 1px solid var(--border);
+
+    &:last-child {
+      border-block-end: 1px solid var(--border);
+    }
+  }
+}
+
+article {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+h2,
+h3 {
+  font-size: var(--fs-2xl);
+
+  a {
+    color: var(--text);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+  }
+}
+
+.description,
+.language {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.language {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+
+  app-icon {
+    --icon-size: 1rem;
+  }
+}
+
+.elsewhere {
+  display: grid;
+  gap: var(--sp-4);
+  margin-block-start: var(--sp-8);
+
+  > h2 {
+    font-size: var(--fs-xl);
+  }
+
+  h3 {
+    font-size: var(--fs-xl);
+  }
+}
+
+.elsewhere-text {
+  margin: 0;
+  color: var(--text-muted);
+}
