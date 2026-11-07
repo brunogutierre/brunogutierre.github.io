@@ -13,8 +13,8 @@ Requires Node 24.
 ```bash
 npm ci
 npm start              # dev server on http://localhost:4200 (English)
-npm run start:pt       # the same in Portuguese (one locale per dev server)
-npm run start:fr       # the same in French
+npm run start:pt       # Portuguese, also at / (one locale per dev server)
+npm run start:fr       # French, also at /
 npm test               # unit tests (Vitest), single run
 npm run test:ci        # unit tests with coverage (gate: 80%)
 npm run test:scripts   # tests of the Node guard scripts
@@ -24,6 +24,9 @@ npm run build          # every locale, prerendered, in dist/personal-site/browse
 npm run check:dist     # validates the built site (see below)
 npm run i18n:extract   # refreshes src/locale/messages.json from the templates
 ```
+
+A dev server runs a single language at `/`, so the language switcher links only work in the full
+build (`npm run build`, then serve `dist/personal-site/browser`).
 
 The app is built with `outputMode: "static"`: every route is prerendered to HTML at build time,
 so the output is plain files that any static host can serve, with no Node server.
