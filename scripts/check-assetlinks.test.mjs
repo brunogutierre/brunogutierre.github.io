@@ -4,14 +4,23 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
 
-import { ASSETLINKS_PATH, checkSite, EXPECTED_PACKAGES, validateAssetLinks } from './check-assetlinks.mjs';
+import {
+  ASSETLINKS_PATH,
+  checkSite,
+  EXPECTED_PACKAGES,
+  validateAssetLinks,
+} from './check-assetlinks.mjs';
 
 const FP_A = Array(32).fill('AB').join(':');
 const FP_B = Array(32).fill('0C').join(':');
 
 const statement = (packageName, fingerprints = [FP_A]) => ({
   relation: ['delegate_permission/common.handle_all_urls'],
-  target: { namespace: 'android_app', package_name: packageName, sha256_cert_fingerprints: fingerprints },
+  target: {
+    namespace: 'android_app',
+    package_name: packageName,
+    sha256_cert_fingerprints: fingerprints,
+  },
 });
 
 const valid = () => EXPECTED_PACKAGES.map((name) => statement(name));
@@ -33,7 +42,10 @@ describe('validateAssetLinks', () => {
   });
 
   it('rejects a missing or an extra package', () => {
-    assert.match(validateAssetLinks(JSON.stringify(valid().slice(1))).join(), /packages must be exactly/);
+    assert.match(
+      validateAssetLinks(JSON.stringify(valid().slice(1))).join(),
+      /packages must be exactly/,
+    );
     const extra = [...valid(), statement('com.example.other')];
     assert.match(validateAssetLinks(JSON.stringify(extra)).join(), /packages must be exactly/);
   });

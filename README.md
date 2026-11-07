@@ -23,11 +23,11 @@ of the Advanced Sudoku Android app (`com.altcozygames.advancedsudoku` and its `.
 variant). Android downloads it to verify the app's links; if it is missing, invalid or behind a
 redirect, those links stop opening the app. It is guarded in three layers:
 
-| Layer | When | What it checks |
-| --- | --- | --- |
-| [`check-assetlinks.mjs`](scripts/check-assetlinks.mjs) | Every pull request and before every upload | The file exists in the published directory, is valid JSON, lists exactly the expected packages with well-formed SHA-256 fingerprints, and is byte-identical to its source |
-| [`verify-live-assetlinks.sh`](scripts/verify-live-assetlinks.sh) | After every deployment | The live URL answers HTTP 200 without a redirect, with a JSON content type and the committed bytes |
-| [`assetlinks-monitor.yml`](.github/workflows/assetlinks-monitor.yml) | Weekly and on demand | The same live check, independent of deployments |
+| Layer                                                                | When                                       | What it checks                                                                                                                                                            |
+| -------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`check-assetlinks.mjs`](scripts/check-assetlinks.mjs)               | Every pull request and before every upload | The file exists in the published directory, is valid JSON, lists exactly the expected packages with well-formed SHA-256 fingerprints, and is byte-identical to its source |
+| [`verify-live-assetlinks.sh`](scripts/verify-live-assetlinks.sh)     | After every deployment                     | The live URL answers HTTP 200 without a redirect, with a JSON content type and the committed bytes                                                                        |
+| [`assetlinks-monitor.yml`](.github/workflows/assetlinks-monitor.yml) | Weekly and on demand                       | The same live check, independent of deployments                                                                                                                           |
 
 Rules that keep it working:
 
