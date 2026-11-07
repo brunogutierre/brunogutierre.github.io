@@ -1,0 +1,103 @@
+<!-- on paper, the CV opens with the name and contacts instead of the page title -->
+<div class="cv-contact print-only">
+  <p class="cv-name">{{ profile.name }}</p>
+  <p class="cv-role">{{ profile.role[locale] }}</p>
+  <ul class="cv-links">
+    <li>{{ profile.location[locale] }}</li>
+    <li>
+      <a [href]="'mailto:' + profile.links.email">{{ profile.links.email }}</a>
+    </li>
+    @for (link of webLinks; track link.url) {
+      <li>
+        <a [href]="link.url">{{ link.label }}</a>
+      </li>
+    }
+  </ul>
+</div>
+
+<div class="page-header">
+  <p class="eyebrow screen-only">
+    <app-icon name="chevron" /><span i18n="@@experience.eyebrow">02 / experience</span>
+  </p>
+  <h1 class="screen-only" i18n="@@nav.experience">Experience</h1>
+  <p class="lead">{{ summary[locale] }}</p>
+  <div class="cv-actions screen-only">
+    <button class="btn btn--primary" type="button" (click)="print()">
+      <app-icon name="printer" /><span i18n="@@experience.print">Print or save as PDF</span>
+    </button>
+  </div>
+</div>
+
+<div class="cv">
+  <section class="cv-section" aria-labelledby="work-title">
+    <h2 id="work-title" i18n="@@experience.work">Work experience</h2>
+    <ol class="timeline">
+      @for (job of jobs; track job.id) {
+        <li class="job">
+          <span class="marker" aria-hidden="true"><app-icon name="chevron" /></span>
+          <h3 class="job-role">{{ job.role[locale] }}</h3>
+          <p class="job-company">
+            {{ job.company }}
+            @if (job.companyNote; as note) {
+              <span class="job-note">· {{ note[locale] }}</span>
+            }
+          </p>
+          <p class="period"><app-period [start]="job.start" [end]="job.end" /></p>
+          <ul class="achievements">
+            @for (achievement of job.achievements[locale]; track $index) {
+              <li>{{ achievement }}</li>
+            }
+          </ul>
+          <ul class="chips" aria-label="Technologies" i18n-aria-label="@@projects.stack">
+            @for (tech of job.stack; track tech) {
+              <li>{{ tech }}</li>
+            }
+          </ul>
+        </li>
+      }
+    </ol>
+  </section>
+
+  <section class="cv-section" aria-labelledby="skills-title">
+    <h2 id="skills-title" i18n="@@experience.skills">Skills</h2>
+    <div class="skill-groups">
+      @for (group of skills; track group.label.en) {
+        <div class="skill-group">
+          <h3>{{ group.label[locale] }}</h3>
+          <ul class="chips">
+            @for (skill of group.skills; track skill) {
+              <li>{{ skill }}</li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </section>
+
+  <div class="cv-columns">
+    <section class="cv-section" aria-labelledby="education-title">
+      <h2 id="education-title" i18n="@@experience.education">Education</h2>
+      <ul class="degrees">
+        @for (degree of education; track degree.title.en) {
+          <li>
+            <h3>{{ degree.title[locale] }}</h3>
+            <p>{{ degree.school[locale] }}</p>
+            <p class="period"><app-period [start]="degree.start" [end]="degree.end" /></p>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="cv-section" aria-labelledby="languages-title">
+      <h2 id="languages-title" i18n="@@experience.languages">Languages</h2>
+      <dl class="spoken">
+        @for (language of languages; track language.name.en) {
+          <div>
+            <dt>{{ language.name[locale] }}</dt>
+            <dd>{{ language.level[locale] }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+  </div>
+</div>

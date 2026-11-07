@@ -10,6 +10,8 @@ export interface Profile {
   readonly name: string;
   /** One line under the name, in the home hero. */
   readonly role: Localized<string>;
+  /** City, on the printed CV. */
+  readonly location: Localized<string>;
   /** Paragraphs of the About section. */
   readonly about: Localized<readonly string[]>;
   readonly highlights: readonly Highlight[];
@@ -26,6 +28,11 @@ export const PROFILE: Profile = {
     en: 'Senior software engineer focused on Angular, design systems and Java back ends.',
     'pt-BR': 'Engenheiro de software sênior, com foco em Angular, design systems e back-ends Java.',
     fr: 'Ingénieur logiciel senior, spécialisé en Angular, en design systems et en back-ends Java.',
+  },
+  location: {
+    en: 'Montreal, QC, Canada',
+    'pt-BR': 'Montreal, QC, Canadá',
+    fr: 'Montréal (Québec), Canada',
   },
   about: {
     en: [

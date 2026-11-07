@@ -1,0 +1,62 @@
+// Paper: light colors and no site chrome. Pages mark content with .print-only / .screen-only;
+// !important so these utilities beat any component display rule.
+@media not print {
+  .print-only {
+    display: none !important;
+  }
+}
+
+@media print {
+  @page {
+    margin: 14mm 15mm;
+  }
+
+  // every light-dark() token resolves to its light value, whatever the theme on screen
+  :root,
+  :root[data-theme] {
+    color-scheme: light;
+  }
+
+  html {
+    font-size: 9.5pt;
+  }
+
+  body {
+    background: #fff;
+    line-height: 1.45;
+  }
+
+  .skip-link,
+  app-site-header,
+  app-site-footer,
+  .screen-only {
+    display: none !important;
+  }
+
+  .page {
+    inline-size: auto;
+    padding-block: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  // chips become a plain comma-separated line: same words, a fraction of the height
+  .chips {
+    display: block;
+    color: var(--text-muted);
+    font: var(--fs-xs) / var(--lh-snug) var(--font-mono);
+
+    li {
+      display: inline;
+      padding: 0;
+      border: 0;
+
+      & + li::before {
+        content: ', ';
+      }
+    }
+  }
+}

@@ -35,7 +35,7 @@ describe('ProjectCard', () => {
   it('lists the stack and the older project it rewrites', () => {
     const root = render(byId('pokerol'));
 
-    expect(Array.from(root.querySelectorAll('.stack li'), text)).toContain('Spring Boot 4');
+    expect(Array.from(root.querySelectorAll('.chips li'), text)).toContain('Spring Boot 4');
     const origin = root.querySelector('.origin a');
     expect(origin?.getAttribute('href')).toBe('https://github.com/brunogutierre/brunos-pokedex');
     expect(text(root.querySelector('.origin'))).toContain('2021');
