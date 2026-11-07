@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - name: Test the asset links checker
+      - name: Test the guard scripts
         run: node --test 'scripts/**/*.test.mjs'
       - name: Check Android asset links
         run: node scripts/check-assetlinks.mjs docs
@@ -40,3 +40,5 @@ jobs:
       - run: npm run format:check
       - run: npm run test:ci
       - run: npm run build
+      - name: Check the prerendered site
+        run: npm run check:dist

@@ -7,11 +7,13 @@
     "start:pt": "ng serve --configuration development-pt",
     "start:fr": "ng serve --configuration development-fr",
     "build": "ng build",
+    "check:dist": "node scripts/check-dist.mjs dist/personal-site/browser",
     "watch": "ng build --watch --configuration development",
     "i18n:extract": "ng extract-i18n",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "test:ci": "ng test --watch=false --coverage",
+    "test:scripts": "node --test 'scripts/**/*.test.mjs'",
     "lint": "ng lint",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

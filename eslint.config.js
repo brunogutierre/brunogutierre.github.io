@@ -34,6 +34,6 @@ module.exports = defineConfig([
     // Dependency-free Node scripts (asset links guard).
     files: ['scripts/**/*.mjs'],
     extends: [eslint.configs.recommended],
-    languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
+    languageOptions: { globals: { process: 'readonly', console: 'readonly', URL: 'readonly' } },
   },
 ]);

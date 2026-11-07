@@ -12,16 +12,45 @@ Requires Node 24.
 
 ```bash
 npm ci
-npm start              # dev server on http://localhost:4200
+npm start              # dev server on http://localhost:4200 (English)
+npm run start:pt       # the same in Portuguese (one locale per dev server)
+npm run start:fr       # the same in French
 npm test               # unit tests (Vitest), single run
-npm run test:ci        # unit tests with coverage
+npm run test:ci        # unit tests with coverage (gate: 80%)
+npm run test:scripts   # tests of the Node guard scripts
 npm run lint           # ESLint (angular-eslint, template accessibility rules)
 npm run format:check   # Prettier
-npm run build          # static site in dist/personal-site/browser
+npm run build          # every locale, prerendered, in dist/personal-site/browser
+npm run check:dist     # validates the built site (see below)
+npm run i18n:extract   # refreshes src/locale/messages.json from the templates
 ```
 
 The app is built with `outputMode: "static"`: every route is prerendered to HTML at build time,
 so the output is plain files that any static host can serve, with no Node server.
+
+## Languages
+
+The site is built once per language with `@angular/localize`:
+
+| Language             | Locale  | URL    | Translations                     |
+| -------------------- | ------- | ------ | -------------------------------- |
+| English (source)     | `en`    | `/`    | `src/locale/messages.json`       |
+| Brazilian Portuguese | `pt-BR` | `/pt/` | `src/locale/messages.pt-BR.json` |
+| French               | `fr`    | `/fr/` | `src/locale/messages.fr.json`    |
+
+- Texts carry custom ids (`i18n="@@nav.blog"`, `` $localize`:@@seo.home.title:...` ``), so a
+  translation survives rewording of the English text. A missing translation fails the build.
+- The root serves real English content instead of redirecting by browser language, so link
+  previews work and search engines see a stable page; every page links its other language
+  versions (`hreflang`, with `x-default` on English) and the header switches language with plain
+  links, since each language is a separate build.
+- URLs always end with `/` (`TrailingSlashPathLocationStrategy`), the form GitHub Pages serves
+  folders at without a redirect.
+
+`scripts/check-dist.mjs` runs in CI after the build and fails when a locale lacks its home or 404
+page, an HTML file declares the wrong `lang`, a page is a meta-refresh redirect stub, any internal
+link, hreflang URL or asset does not resolve to a served file, or a folder would shadow
+`/AdvancedSudoku/` (published on this domain by another repository).
 
 ## Deployment
 
