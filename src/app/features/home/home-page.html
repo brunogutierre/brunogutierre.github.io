@@ -1,0 +1,71 @@
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-content">
+    <p class="hero-greeting" i18n="@@home.greeting">Hello, I'm</p>
+    <!-- one name per line; the space inside the first span keeps the accessible name -->
+    <h1 id="hero-title"><span class="line">Bruno </span><span class="line">Gutierre</span></h1>
+    <p class="hero-role">{{ profile.role[locale] }}</p>
+    <div class="hero-actions">
+      <a class="btn btn--on-hero" routerLink="/projects">
+        <span i18n="@@home.ctaProjects">See projects</span><app-icon name="arrow-right" />
+      </a>
+      <a class="btn btn--on-hero-ghost" routerLink="/experience" i18n="@@nav.experience"
+        >Experience</a
+      >
+    </div>
+  </div>
+  <!-- root-absolute: every language build uses the copy at the site root -->
+  <img
+    class="hero-photo"
+    src="/images/bruno-gutierre-480.webp"
+    srcset="/images/bruno-gutierre-240.webp 240w, /images/bruno-gutierre-480.webp 480w"
+    sizes="13rem"
+    width="480"
+    height="480"
+    fetchpriority="high"
+    alt="Photo of Bruno Gutierre"
+    i18n-alt="@@home.photoAlt"
+  />
+</section>
+
+<div class="page sections">
+  <section class="about" aria-labelledby="about-title">
+    <div class="section-header">
+      <p class="eyebrow">
+        <app-icon name="chevron" /><span i18n="@@home.aboutEyebrow">00 / about</span>
+      </p>
+      <h2 id="about-title" i18n="@@home.aboutTitle">About me</h2>
+    </div>
+    <div class="about-text">
+      @for (paragraph of profile.about[locale]; track $index) {
+        <p>{{ paragraph }}</p>
+      }
+    </div>
+    <ul class="highlights">
+      @for (highlight of profile.highlights; track highlight.value) {
+        <li>
+          <!-- the space lives inside the span: Angular drops whitespace between elements -->
+          <strong>{{ highlight.value }}</strong
+          ><span> {{ highlight.label[locale] }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="featured" aria-labelledby="featured-title">
+    <div class="section-header">
+      <p class="eyebrow">
+        <app-icon name="chevron" /><span i18n="@@projects.eyebrow">01 / projects</span>
+      </p>
+      <h2 id="featured-title" i18n="@@home.featuredTitle">Featured projects</h2>
+    </div>
+    <ul class="project-grid">
+      @for (project of featured; track project.id) {
+        <li><app-project-card [project]="project" /></li>
+      }
+    </ul>
+    <app-android-app-card />
+    <a class="btn btn--ghost all-projects" routerLink="/projects">
+      <span i18n="@@home.allProjects">All projects</span><app-icon name="arrow-right" />
+    </a>
+  </section>
+</div>
