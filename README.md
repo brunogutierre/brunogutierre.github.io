@@ -18,6 +18,8 @@ npm run start:fr       # French, also at /
 npm test               # unit tests (Vitest), single run
 npm run test:ci        # unit tests with coverage (gate: 80%)
 npm run test:scripts   # tests of the Node guard scripts
+npm run test:content   # type-check and tests of the blog content pipeline
+npm run content:drafts # regenerate blog content (drafts included) while npm start runs
 npm run lint           # ESLint (angular-eslint, template accessibility rules)
 npm run format:check   # Prettier
 npm run build          # every locale, prerendered, in dist/personal-site/browser
@@ -120,6 +122,49 @@ page, so the CV is always the same as the site and exists in each language.
   `:focus-visible` outline (white inside the hero), 44px targets, skip link, landmarks,
   `prefers-reduced-motion` (no gradient drift, no transitions), `prefers-contrast: more` and
   `forced-colors` support. No horizontal scroll from 320px.
+
+## Blog
+
+Posts are Markdown files, one per language: `content/blog/<slug>/<locale>.md` (`en.md`,
+`pt-BR.md`, `fr.md`). The folder name is the post URL in every language. A post may exist in only
+some languages; each language lists only its own posts.
+
+```markdown
+---
+title: 'Keeping App Links alive'
+description: Shown in listings, search results and link previews (up to 200 characters).
+date: 2026-11-07
+updated: 2026-11-20 # optional
+tags: [angular, github-pages] # optional, lowercase slugs, up to 5
+draft: true # optional: shown by npm start, left out of production builds
+---
+
+Body in Markdown. Headings start at `##`: the title is the page's only `h1`.
+```
+
+`npm run content` (`scripts/content/build-content.mts`) runs before `start`, `build`, `test` and
+`i18n:extract`. It writes TypeScript into `src/generated/content/` (git-ignored), which the Angular
+build compiles and type-checks:
+
+| Output                     | Holds                                                      |
+| -------------------------- | ---------------------------------------------------------- |
+| `blog.ts`                  | `POSTS`: the posts of each language, newest first; loaders |
+| `posts/<locale>/<slug>.ts` | The post HTML, imported lazily: each post is its own chunk |
+
+Decisions:
+
+- **Markdown is rendered at build time, in Node.** `markdown-it` with raw HTML disabled (it is
+  escaped) and `markdown-it-anchor` for heading links. Shiki highlights code with `light-dark()`
+  colors, so code follows the site theme and no parser or highlighter reaches the browser.
+  Rejected: rendering in Angular (`ngx-markdown`), which ships both to every reader; Analog.js, a
+  second framework for one feature; unified/remark/rehype, many packages for the same output.
+- **Strict content.** Frontmatter is validated with `zod` (unknown keys, bad dates and tags are
+  errors), code fences must use a known language, and every problem in every file is reported in
+  one run. Drafts are checked too.
+- **TypeScript without a build step.** The pipeline is `.mts` that Node 24 runs directly (type
+  stripping); `tsconfig.scripts.json` type-checks it. No `tsx` or `ts-node`.
+- **Generated code is not committed.** It always matches the Markdown, and reviews show only
+  the Markdown.
 
 ## Deployment
 

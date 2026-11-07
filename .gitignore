@@ -33,3 +33,6 @@ Thumbs.db
 CLAUDE.md
 CLAUDE.local.md
 manual/
+
+# Written by npm run content (scripts/content/build-content.mts)
+/src/generated/
