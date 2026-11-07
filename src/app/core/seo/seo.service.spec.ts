@@ -49,6 +49,26 @@ describe('SeoService', () => {
     expect(head.querySelector('meta[name="robots"]')).toBeNull();
   });
 
+  it('points the alternates only to the languages the page exists in', () => {
+    seo.apply('/blog/post', { title: 'T', description: 'D', locales: ['pt-BR', 'fr'] });
+
+    expect(all('meta[property="og:locale:alternate"]', 'content')).toEqual(['fr_FR']);
+    expect(all('link[rel="alternate"]', 'hreflang')).toEqual(['pt-BR', 'fr', 'x-default']);
+    // no English version: x-default is the first one there is
+    expect(attr('link[hreflang="x-default"]', 'href')).toBe(
+      'https://brunogutierre.github.io/pt/blog/post/',
+    );
+  });
+
+  it('keeps English as x-default when the page has an English version', () => {
+    seo.apply('/blog/post', { title: 'T', description: 'D', locales: ['en', 'pt-BR'] });
+
+    expect(all('link[rel="alternate"]', 'hreflang')).toEqual(['en', 'pt-BR', 'x-default']);
+    expect(attr('link[hreflang="x-default"]', 'href')).toBe(
+      'https://brunogutierre.github.io/blog/post/',
+    );
+  });
+
   it('replaces the tags of the previous page instead of adding more', () => {
     seo.apply('/projects', { title: 'A', description: 'A' });
     seo.apply('/blog', { title: 'B', description: 'B' });
