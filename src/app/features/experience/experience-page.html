@@ -1,9 +1,31 @@
+<!-- on paper, the CV opens with the name and contacts instead of the page title -->
+<div class="cv-contact print-only">
+  <p class="cv-name">{{ profile.name }}</p>
+  <p class="cv-role">{{ profile.role[locale] }}</p>
+  <ul class="cv-links">
+    <li>{{ profile.location[locale] }}</li>
+    <li>
+      <a [href]="'mailto:' + profile.links.email">{{ profile.links.email }}</a>
+    </li>
+    @for (link of webLinks; track link.url) {
+      <li>
+        <a [href]="link.url">{{ link.label }}</a>
+      </li>
+    }
+  </ul>
+</div>
+
 <div class="page-header">
-  <p class="eyebrow">
+  <p class="eyebrow screen-only">
     <app-icon name="chevron" /><span i18n="@@experience.eyebrow">02 / experience</span>
   </p>
-  <h1 i18n="@@nav.experience">Experience</h1>
+  <h1 class="screen-only" i18n="@@nav.experience">Experience</h1>
   <p class="lead">{{ summary[locale] }}</p>
+  <div class="cv-actions screen-only">
+    <button class="btn btn--primary" type="button" (click)="print()">
+      <app-icon name="printer" /><span i18n="@@experience.print">Print or save as PDF</span>
+    </button>
+  </div>
 </div>
 
 <div class="cv">

@@ -192,3 +192,109 @@ dd {
     color: var(--text-muted);
   }
 }
+
+// Shown on paper only (see .print-only): name, role and contacts above the summary
+.cv-contact {
+  display: grid;
+  gap: var(--sp-1);
+  margin-block-end: var(--sp-5);
+  padding-block-end: var(--sp-4);
+  border-block-end: 2px solid var(--primary);
+}
+
+.cv-name {
+  font: var(--fw-black) var(--fs-2xl) / var(--lh-tight) var(--font-display);
+  letter-spacing: var(--tracking-tight);
+}
+
+.cv-role {
+  color: var(--primary);
+  font-weight: var(--fw-semibold);
+}
+
+.cv-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sp-4);
+  padding: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  list-style: none;
+}
+
+.cv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-2);
+}
+
+// Paper: tighter spacing, and page breaks that never split an achievement or leave a heading
+// alone at the bottom of a page.
+@media print {
+  .page-header {
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-5);
+  }
+
+  .lead {
+    max-inline-size: none;
+    color: var(--text);
+    font-size: var(--fs-md);
+  }
+
+  .cv {
+    gap: var(--sp-5);
+  }
+
+  .cv-section {
+    gap: var(--sp-4);
+
+    h2 {
+      font-size: var(--fs-xl);
+    }
+  }
+
+  .job {
+    gap: var(--sp-1);
+    padding-block-end: var(--sp-4);
+  }
+
+  h2,
+  h3,
+  .job-company,
+  .period {
+    break-after: avoid;
+  }
+
+  .achievements {
+    gap: var(--sp-1);
+    max-inline-size: none;
+  }
+
+  .achievements li,
+  .skill-group,
+  .degrees li,
+  .spoken div {
+    break-inside: avoid;
+  }
+
+  // one line per group: label, then the skills
+  .skill-groups {
+    grid-template-columns: 1fr;
+    gap: var(--sp-2);
+  }
+
+  .skill-group {
+    grid-template-columns: 12rem 1fr;
+    align-items: baseline;
+
+    h3 {
+      font-size: var(--fs-md);
+    }
+  }
+
+  .cv-columns {
+    grid-template-columns: 1fr 1fr;
+  }
+}
