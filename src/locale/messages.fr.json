@@ -1,4 +1,27 @@
 {
   "locale": "fr",
-  "translations": {}
+  "translations": {
+    "seo.notFound.title": "Page introuvable",
+    "seo.notFound.description": "Cette page n’existe pas sur le site de Bruno Gutierre.",
+    "seo.home.title": "Bruno Gutierre · Développeur frontend et fullstack",
+    "seo.home.description": "Projets, expérience et blog de Bruno Gutierre, développeur frontend et fullstack qui travaille avec Angular et Java.",
+    "nav.projects": "Projets",
+    "seo.projects.description": "Projets d’étude et portfolio de Bruno Gutierre : applications et bibliothèques Angular, API Spring Boot et applications Android.",
+    "nav.experience": "Expérience",
+    "seo.experience.description": "Expérience professionnelle et compétences de Bruno Gutierre, avec un CV imprimable.",
+    "nav.blog": "Blog",
+    "seo.blog.description": "Notes de Bruno Gutierre sur les leçons tirées du développement de logiciels.",
+    "shell.skip": "Aller au contenu",
+    "blog.soon": "Bientôt : des notes sur ce que j’apprends dans chaque projet.",
+    "experience.soon": "Bientôt : mon parcours professionnel et un CV imprimable.",
+    "home.role": "Développeur frontend et fullstack : Angular, Java et, depuis peu, Python.",
+    "home.construction": "Le nouveau site est en construction.",
+    "notFound.title": "Page introuvable",
+    "notFound.text": "La page que vous cherchez n’existe pas ou a été déplacée.",
+    "notFound.home": "Retour à l’accueil",
+    "projects.soon": "Bientôt : les projets que je réalise pour apprendre et montrer ce que je sais faire.",
+    "shell.languages": "Langues",
+    "footer.email": "E-mail",
+    "shell.nav": "Navigation principale"
+  }
 }
