@@ -41,16 +41,8 @@ export const routes: Routes = [
       } satisfies PageSeo,
     },
   },
-  {
-    path: 'blog',
-    loadComponent: () => import('./features/blog/blog-page').then((m) => m.BlogPage),
-    data: {
-      seo: {
-        title: pageTitle($localize`:@@nav.blog:Blog`),
-        description: $localize`:@@seo.blog.description:Notes by Bruno Gutierre on lessons learned while building software.`,
-      } satisfies PageSeo,
-    },
-  },
+  // The blog index and its posts: the post list is loaded only with them.
+  { path: 'blog', loadChildren: () => import('./features/blog/blog.routes') },
   // A concrete path, so it is prerendered; it becomes the site-wide 404.html on deployment.
   { path: '404', component: NotFoundPage, data: { seo: notFound } },
   { path: '**', component: NotFoundPage, data: { seo: notFound } },

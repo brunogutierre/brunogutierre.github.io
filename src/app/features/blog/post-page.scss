@@ -1,0 +1,40 @@
+.post-header {
+  display: grid;
+  justify-items: start;
+  gap: var(--sp-4);
+  margin-block-end: var(--sp-7);
+
+  h1 {
+    font-size: var(--fs-3xl);
+  }
+}
+
+.back,
+.translations {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  margin: 0;
+  font-size: var(--fs-sm);
+
+  app-icon {
+    --icon-size: 1rem;
+  }
+}
+
+.back {
+  min-block-size: var(--target);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+}
+
+.translations {
+  color: var(--text-muted);
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--target);
+  }
+}

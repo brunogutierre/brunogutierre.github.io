@@ -1,0 +1,32 @@
+<article class="post">
+  <header class="post-header">
+    <a class="back" routerLink="/blog">
+      <app-icon name="arrow-left" /><span i18n="@@post.back">All posts</span>
+    </a>
+    <h1>{{ summary().title }}</h1>
+    <p class="lead">{{ summary().description }}</p>
+    <app-post-meta [post]="summary()" />
+    @if (summary().tags.length) {
+      <ul class="chips" aria-label="Topics" i18n-aria-label="@@blog.tags">
+        @for (tag of summary().tags; track tag) {
+          <li>{{ tag }}</li>
+        }
+      </ul>
+    }
+    @if (translations().length) {
+      <p class="translations">
+        <app-icon name="globe" /><span i18n="@@post.translations">Read in</span>
+        @for (translation of translations(); track translation.locale) {
+          <a
+            [href]="translation.href"
+            [attr.hreflang]="translation.locale"
+            [attr.lang]="translation.locale"
+            >{{ translation.name }}</a
+          >
+        }
+      </p>
+    }
+  </header>
+
+  <app-post-body [html]="post().content.html" [url]="url()" />
+</article>

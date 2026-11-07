@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 export const ICON_NAMES = [
+  'arrow-left',
   'arrow-right',
   'book-open',
   'braces',
@@ -42,6 +43,10 @@ const FILLED: ReadonlySet<IconName> = new Set(['github', 'linkedin']);
       focusable="false"
     >
       @switch (name()) {
+        @case ('arrow-left') {
+          <path d="m12 19-7-7 7-7" />
+          <path d="M19 12H5" />
+        }
         @case ('arrow-right') {
           <path d="M5 12h14" />
           <path d="m12 5 7 7-7 7" />
