@@ -23,6 +23,7 @@ npm run content:drafts # regenerate blog content (drafts included) while npm sta
 npm run lint           # ESLint (angular-eslint, template accessibility rules)
 npm run format:check   # Prettier
 npm run build          # every locale, prerendered, in dist/personal-site/browser
+npm run build:drafts   # the same with the draft posts, to preview them prerendered
 npm run check:dist     # validates the built site (see below)
 npm run i18n:extract   # refreshes src/locale/messages.json from the templates
 ```
@@ -149,7 +150,7 @@ build compiles and type-checks:
 | Output                     | Holds                                                      |
 | -------------------------- | ---------------------------------------------------------- |
 | `blog.ts`                  | `POSTS`: the posts of each language, newest first; loaders |
-| `posts/<locale>/<slug>.ts` | The post HTML, imported lazily: each post is its own chunk |
+| `posts/<locale>/<slug>.ts` | The post HTML and its table of contents, imported lazily   |
 
 Decisions:
 
@@ -165,6 +166,38 @@ Decisions:
   stripping); `tsconfig.scripts.json` type-checks it. No `tsx` or `ts-node`.
 - **Generated code is not committed.** It always matches the Markdown, and reviews show only
   the Markdown.
+
+### Blog pages
+
+| URL                         | Page                                                          |
+| --------------------------- | ------------------------------------------------------------- |
+| `/blog/`, `/pt/blog/`, …    | The language's posts, newest first, then "In other languages" |
+| `/blog/<slug>/`, `/pt/…`, … | A post: one prerendered page per post the language has        |
+
+A post page shows its date, reading time and topics, links to its translations, a table of
+contents (from two `##` sections), a copy button on code blocks and links to the older and newer
+posts. A gradient bar under the header shows reading progress.
+
+Links between pages of the site are plain Markdown links with the language prefix, such as
+`[projects](/pt/projects/)`; the dist check fails the build if one leads nowhere.
+
+Decisions:
+
+- **Untranslated posts stay visible.** A language lists the posts it lacks under "In other
+  languages", linking to the version that exists. The post page declares only its own languages,
+  so `hreflang` links never point to a missing page, and the language switcher sends readers to
+  the blog index of a language without the post.
+- **One trusted HTML component.** `PostBody` is the only use of `bypassSecurityTrustHtml`: its
+  HTML comes from the repository's Markdown, with raw HTML escaped at build time, and nothing a
+  visitor sends reaches it. Angular's sanitizer would strip the heading ids and code colors.
+- **Prerendered per language.** `getPrerenderParams` lists the posts of the language being built;
+  any other slug is GitHub Pages' 404, and a resolver shows the 404 page for it in the app.
+- **Code colors checked for contrast.** Code sits on `--surface-2`, where two colors of
+  `github-light-default` fall short of 4.5:1; they are replaced, and a test checks every color.
+- **No JavaScript needed to read.** The copy buttons are added in the browser only, and the
+  reading progress bar is a CSS scroll-driven animation (no bar where it is unsupported).
+- **Drafts are checked in CI.** Until the first real post, the production build has no post
+  pages, so CI also prerenders the drafts (`npm run build:drafts`) and runs the dist check.
 
 ## Deployment
 
