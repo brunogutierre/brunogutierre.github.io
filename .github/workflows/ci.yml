@@ -40,6 +40,10 @@ jobs:
       - run: npm run format:check
       - run: npm run test:content
       - run: npm run test:ci
+      # Drafts never ship, so the production build has no post pages until the first real post:
+      # prerender the draft posts too and check that site, before building the one that ships.
+      - name: Build and check with the draft posts
+        run: npm run build:drafts && npm run check:dist
       - run: npm run build
       - name: Check the prerendered site
         run: npm run check:dist

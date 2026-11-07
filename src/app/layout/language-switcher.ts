@@ -1,11 +1,21 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { CURRENT_LOCALE, LOCALE_INFO, LOCALES, localizedPath } from '../core/i18n/locale';
+import {
+  CURRENT_LOCALE,
+  Locale,
+  LOCALE_INFO,
+  LOCALES,
+  localizedPath,
+  normalizePath,
+} from '../core/i18n/locale';
 import { injectCurrentPage } from '../core/routing/current-page';
 
 /**
  * Links to the current page in every language. Each language is a separate build, so these are
- * plain links (a full page load), not router links. A missing page links to each language's
- * home instead: /404.html is served at any missing URL, which has no translation.
+ * plain links (a full page load), not router links. Where the page does not exist:
+ * - a page missing in some languages (an untranslated post) links to its parent page there, the
+ *   blog index;
+ * - the 404 page links to each language's home: /404.html is served at any missing URL, so it
+ *   has no translation.
  */
 @Component({
   selector: 'app-language-switcher',
@@ -78,8 +88,19 @@ export class LanguageSwitcher {
       locale,
       short: LOCALE_INFO[locale].short,
       name: LOCALE_INFO[locale].name,
-      href: localizedPath(locale, this.page().indexable ? this.page().url : '/'),
+      href: localizedPath(locale, this.target(locale)),
       current: locale === this.current,
     })),
   );
+
+  private target(locale: Locale): string {
+    const { url, indexable, locales } = this.page();
+    if (!indexable) return '/';
+    return locales.includes(locale) ? url : parentPath(url);
+  }
+}
+
+/** `/blog/my-post/` → `/blog/` */
+export function parentPath(url: string): string {
+  return normalizePath(url).replace(/[^/]+\/$/, '');
 }

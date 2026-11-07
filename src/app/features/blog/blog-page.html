@@ -1,0 +1,57 @@
+<div class="page-header">
+  <p class="eyebrow"><app-icon name="chevron" /><span i18n="@@blog.eyebrow">03 / blog</span></p>
+  <h1 i18n="@@nav.blog">Blog</h1>
+  @if (empty) {
+    <p class="lead" i18n="@@blog.soon">Coming soon: notes on what I learn from each project.</p>
+  } @else {
+    <p class="lead" i18n="@@blog.lead">Notes on what I learn from each project.</p>
+  }
+</div>
+
+@if (posts.length) {
+  <ol class="posts">
+    @for (post of posts; track post.slug) {
+      <li>
+        <article [attr.aria-labelledby]="'post-' + post.slug">
+          <h2 [id]="'post-' + post.slug">
+            <a [routerLink]="['/blog', post.slug]">{{ post.title }}</a>
+          </h2>
+          <app-post-meta [post]="post" />
+          <p class="description">{{ post.description }}</p>
+          @if (post.tags.length) {
+            <ul class="chips" aria-label="Topics" i18n-aria-label="@@blog.tags">
+              @for (tag of post.tags; track tag) {
+                <li>{{ tag }}</li>
+              }
+            </ul>
+          }
+        </article>
+      </li>
+    }
+  </ol>
+}
+
+@if (elsewhere.length) {
+  <section class="elsewhere" aria-labelledby="elsewhere-title">
+    <h2 id="elsewhere-title" i18n="@@blog.elsewhere">In other languages</h2>
+    <p class="elsewhere-text" i18n="@@blog.elsewhereText">
+      These posts are not translated into English yet.
+    </p>
+    <ul class="posts">
+      @for (post of elsewhere; track post.slug) {
+        <li>
+          <article [attr.aria-labelledby]="'post-' + post.slug">
+            <h3 [id]="'post-' + post.slug" [attr.lang]="post.locale">
+              <a [href]="post.href" [attr.hreflang]="post.locale">{{ post.title }}</a>
+            </h3>
+            <app-post-meta [post]="post" />
+            <p class="description" [attr.lang]="post.locale">{{ post.description }}</p>
+            <p class="language">
+              <app-icon name="globe" /><span [attr.lang]="post.locale">{{ post.language }}</span>
+            </p>
+          </article>
+        </li>
+      }
+    </ul>
+  </section>
+}

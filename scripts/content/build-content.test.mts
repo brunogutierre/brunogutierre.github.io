@@ -92,8 +92,13 @@ describe('writeContent', () => {
       index,
       /'hello': \(\) => import\('\.\/posts\/en\/hello'\)\.then\(\(m\) => m\.default\)/,
     );
+    assert.match(index, /Record<string, \(\) => Promise<PostContent>>/);
     const body = await readFile(join(dir, 'out/posts/en/hello.ts'), 'utf8');
-    assert.match(body, /export default "<p>Some text\.<\/p>\\n";/);
+    assert.match(
+      body,
+      /const content: PostContent = \{\n {2}"html": "<p>Some text\.<\/p>\\n",\n {2}"toc": \[\]\n\};/,
+    );
+    assert.match(body, /export default content;/);
     await assert.rejects(readFile(join(dir, 'out/posts/en/stale.ts')));
   });
 });

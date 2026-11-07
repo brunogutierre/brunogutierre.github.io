@@ -1,8 +1,9 @@
-import { Location } from '@angular/common';
+import { Location, ViewportScroller } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DOCUMENT,
   ElementRef,
   inject,
   viewChild,
@@ -39,6 +40,16 @@ export class App {
   protected readonly skipHref = computed(
     () => `${this.location.prepareExternalUrl(this.page().url)}#main`,
   );
+
+  constructor() {
+    // The router scrolls to a fragment with window.scrollTo, which ignores CSS scroll-padding:
+    // keep the heading clear of the sticky header by the same amount the CSS reserves.
+    const root = inject(DOCUMENT).documentElement;
+    inject(ViewportScroller).setOffset(() => [
+      0,
+      parseFloat(getComputedStyle(root).scrollPaddingTop) || 0,
+    ]);
+  }
 
   protected skipToMain(event: Event): void {
     event.preventDefault();

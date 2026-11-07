@@ -1,15 +1,17 @@
 import { LocationStrategy, TrailingSlashPathLocationStrategy } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { App } from './app';
 import { routes } from './app.routes';
+import { postSummary, provideBlogContent } from './core/blog/testing';
 
 describe('App shell', () => {
   async function render(url: string) {
     TestBed.configureTestingModule({
       providers: [
-        provideRouter(routes),
+        provideRouter(routes, withComponentInputBinding()),
         { provide: LocationStrategy, useClass: TrailingSlashPathLocationStrategy },
+        provideBlogContent({ en: [postSummary('hello', { title: 'Hello' })] }),
       ],
     });
     const fixture = TestBed.createComponent(App);
@@ -31,6 +33,8 @@ describe('App shell', () => {
     ['/projects', 'Projects'],
     ['/experience', 'Experience'],
     ['/blog', 'Blog'],
+    ['/blog/hello', 'Hello'],
+    ['/blog/no-such-post', 'Page not found'],
     ['/404', 'Page not found'],
     ['/does/not/exist', 'Page not found'],
   ])('routes %s to its page', async (url, heading) => {

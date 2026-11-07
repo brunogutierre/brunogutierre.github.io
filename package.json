@@ -12,6 +12,7 @@
     "prebuild": "npm run content",
     "build": "ng build",
     "postbuild": "node scripts/postbuild.mjs dist/personal-site/browser",
+    "build:drafts": "npm run content:drafts && ng build && node scripts/postbuild.mjs dist/personal-site/browser",
     "check:dist": "node scripts/check-dist.mjs dist/personal-site/browser",
     "prewatch": "npm run content:drafts",
     "watch": "ng build --watch --configuration development",

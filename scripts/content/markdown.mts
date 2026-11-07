@@ -1,6 +1,8 @@
 import Shiki from '@shikijs/markdown-it';
-import MarkdownIt from 'markdown-it';
+import MarkdownIt, { type Token } from 'markdown-it';
 import anchor from 'markdown-it-anchor';
+import type { ShikiTransformer } from 'shiki';
+import githubLight from 'shiki/themes/github-light-default.mjs';
 
 /**
  * Languages code fences may use (their aliases work too: ts, sh, yml…). A fence in any other
@@ -41,15 +43,59 @@ export function readingMinutes(markdown: string): number {
   return Math.max(1, Math.round(words / 200));
 }
 
+/** A `##` or `###` heading, for the table of contents. Same shape as `TocEntry` in the app. */
+export interface TocEntry {
+  readonly level: 2 | 3;
+  readonly id: string;
+  readonly text: string;
+}
+
+export interface RenderedPost {
+  readonly html: string;
+  readonly toc: readonly TocEntry[];
+}
+
+/**
+ * Code colors. The page gives code blocks their background (`--surface-2`), and on it two colors
+ * of the light theme fall short of 4.5:1: they are swapped for darker ones from GitHub's palette.
+ */
+const THEMES = {
+  light: { ...githubLight, colorReplacements: { '#6e7781': '#59636e', '#8250df': '#6639ba' } },
+  dark: 'github-dark-default',
+} as const;
+
+/** Drops the theme backgrounds from `<pre>`: the site styles set it, in both themes. */
+const noBackground: ShikiTransformer = {
+  name: 'site:no-background',
+  pre(node) {
+    node.properties['style'] = String(node.properties['style'] ?? '')
+      .split(';')
+      .filter((rule) => !/^(background-color|--shiki-(light|dark)-bg):/.test(rule))
+      .join(';');
+  },
+};
+
+function tableOfContents(tokens: readonly Token[]): TocEntry[] {
+  return tokens.flatMap((token, i) => {
+    if (token.type !== 'heading_open' || (token.tag !== 'h2' && token.tag !== 'h3')) return [];
+    const text = (tokens[i + 1].children ?? [])
+      .filter((child) => child.type === 'text' || child.type === 'code_inline')
+      .map((child) => child.content)
+      .join('');
+    return [{ level: token.tag === 'h2' ? 2 : 3, id: String(token.attrGet('id')), text }];
+  });
+}
+
 /**
  * Builds the Markdown → HTML function for posts:
  * - raw HTML in a post is escaped, never rendered (`html: false`), and markdown-it drops
  *   `javascript:` and similar links, so the output is safe to insert as is;
- * - `##` and `###` headings get ids and link to themselves;
+ * - `##` and `###` headings get ids, link to themselves and make the table of contents;
  * - code is highlighted at build time with `light-dark()` colors, so it follows the site theme
- *   without any highlighter in the browser.
+ *   without any highlighter in the browser. Each block sits in a `.code-block` with a head that
+ *   shows its language and, in the browser, gets a copy button.
  */
-export async function createRenderer(): Promise<(markdown: string) => string> {
+export async function createRenderer(): Promise<(markdown: string) => RenderedPost> {
   const md = MarkdownIt({ html: false });
   md.use(anchor, {
     level: [2, 3],
@@ -58,11 +104,19 @@ export async function createRenderer(): Promise<(markdown: string) => string> {
   });
   md.use(
     await Shiki({
-      themes: { light: 'github-light', dark: 'github-dark' },
+      themes: THEMES,
       langs: [...CODE_LANGUAGES],
       defaultColor: 'light-dark()',
+      transformers: [noBackground],
     }),
   );
+  const fence = md.renderer.rules.fence!;
+  md.renderer.rules.fence = (tokens, idx, ...rest) => {
+    const lang = tokens[idx].info.trim().split(/\s+/)[0];
+    const label = lang ? `<span class="code-lang">${md.utils.escapeHtml(lang)}</span>` : '';
+    const code = fence(tokens, idx, ...rest);
+    return `<div class="code-block"><div class="code-head">${label}</div>${code}</div>\n`;
+  };
 
   return (markdown) => {
     const env = {};
@@ -72,6 +126,6 @@ export async function createRenderer(): Promise<(markdown: string) => string> {
       const line = (h1.map?.[0] ?? 0) + 1;
       throw new Error(`Line ${line} of the body: start headings at ##, the title is the page's h1`);
     }
-    return md.renderer.render(tokens, md.options, env);
+    return { html: md.renderer.render(tokens, md.options, env), toc: tableOfContents(tokens) };
   };
 }

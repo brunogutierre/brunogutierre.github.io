@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { CURRENT_LOCALE } from '../core/i18n/locale';
-import { LanguageSwitcher } from './language-switcher';
+import { LanguageSwitcher, parentPath } from './language-switcher';
 
 @Component({
   selector: 'app-host',
@@ -20,6 +20,7 @@ describe('LanguageSwitcher', () => {
       providers: [
         provideRouter([
           { path: 'missing', component: Host, data: { seo: { noindex: true } } },
+          { path: 'blog/:slug', component: Host, data: { seo: { locales: ['en', 'fr'] } } },
           { path: '**', component: Host },
         ]),
         { provide: CURRENT_LOCALE, useValue: 'fr' },
@@ -55,5 +56,23 @@ describe('LanguageSwitcher', () => {
     const root = await render('/missing');
 
     expect(links(root).map((a) => a.getAttribute('href'))).toEqual(['/', '/pt/', '/fr/']);
+  });
+
+  it('links the blog index of a language a post is not translated into', async () => {
+    const root = await render('/blog/a-post');
+
+    expect(links(root).map((a) => a.getAttribute('href'))).toEqual([
+      '/blog/a-post/',
+      '/pt/blog/',
+      '/fr/blog/a-post/',
+    ]);
+  });
+});
+
+describe('parentPath', () => {
+  it('drops the last segment of a URL', () => {
+    expect(parentPath('/blog/a-post')).toBe('/blog/');
+    expect(parentPath('/blog/a-post/#intro')).toBe('/blog/');
+    expect(parentPath('/blog')).toBe('/');
   });
 });
