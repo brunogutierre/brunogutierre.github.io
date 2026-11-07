@@ -1,0 +1,127 @@
+@use 'breakpoints' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  text-size-adjust: 100%;
+  font-optical-sizing: auto;
+
+  @media (min-width: $bp-md) {
+    scroll-padding-top: var(--header-h); // the header is sticky from here up
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100svh;
+}
+
+main {
+  flex: 1;
+
+  &:focus {
+    outline: none;
+  }
+
+  p {
+    hyphens: auto; // body text only: never in headings, links or labels
+  }
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+
+  &:hover {
+    color: var(--primary-hover);
+    text-decoration-thickness: 2px;
+  }
+}
+
+// outline, not box-shadow: it survives forced-colors mode
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+app-icon {
+  display: inline-flex;
+  flex: none;
+  inline-size: var(--icon-size, 1.25rem);
+  block-size: var(--icon-size, 1.25rem);
+}
+
+// sun/moon and similar theme-dependent bits, switched by CSS so they are right before the app boots
+.light-only {
+  display: var(--light-only);
+}
+
+.dark-only {
+  display: var(--dark-only);
+}
+
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  z-index: var(--z-skip);
+  inset-block-start: var(--sp-2);
+  inset-inline-start: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+  font-weight: var(--fw-semibold);
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
+}
