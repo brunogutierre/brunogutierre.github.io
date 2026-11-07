@@ -19,6 +19,22 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": {
+          "code": "en",
+          "subPath": ""
+        },
+        "locales": {
+          "pt-BR": {
+            "translation": "src/locale/messages.pt-BR.json",
+            "subPath": "pt"
+          },
+          "fr": {
+            "translation": "src/locale/messages.fr.json",
+            "subPath": "fr"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -36,7 +52,11 @@
               "src/styles.scss"
             ],
             "server": "src/main.server.ts",
-            "outputMode": "static"
+            "outputMode": "static",
+            "polyfills": [
+              "@angular/localize/init"
+            ],
+            "i18nMissingTranslation": "error"
           },
           "configurations": {
             "production": {
@@ -52,12 +72,23 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "localize": true
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "pt": {
+              "localize": [
+                "pt-BR"
+              ]
+            },
+            "fr": {
+              "localize": [
+                "fr"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -70,12 +101,32 @@
             },
             "development": {
               "buildTarget": "personal-site:build:development"
+            },
+            "development-pt": {
+              "buildTarget": "personal-site:build:development,pt"
+            },
+            "development-fr": {
+              "buildTarget": "personal-site:build:development,fr"
             }
           },
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "coverageInclude": [
+              "src/app/**/*.ts"
+            ],
+            "coverageExclude": [
+              "src/app/**/*.spec.ts"
+            ],
+            "coverageThresholds": {
+              "statements": 80,
+              "branches": 80,
+              "functions": 80,
+              "lines": 80
+            }
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
@@ -85,6 +136,14 @@
               "src/**/*.html",
               "scripts/**/*.mjs"
             ]
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n",
+          "options": {
+            "buildTarget": "personal-site:build",
+            "format": "json",
+            "outputPath": "src/locale"
           }
         }
       }
