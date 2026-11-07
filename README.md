@@ -6,6 +6,23 @@ It will be built for both my personal practice and my portfolio.
 > English, Portuguese and French. Until the new app replaces it, the committed `docs/` folder
 > (the 2021 build) is what gets published.
 
+## Development
+
+Requires Node 24.
+
+```bash
+npm ci
+npm start              # dev server on http://localhost:4200
+npm test               # unit tests (Vitest), single run
+npm run test:ci        # unit tests with coverage
+npm run lint           # ESLint (angular-eslint, template accessibility rules)
+npm run format:check   # Prettier
+npm run build          # static site in dist/personal-site/browser
+```
+
+The app is built with `outputMode: "static"`: every route is prerendered to HTML at build time,
+so the output is plain files that any static host can serve, with no Node server.
+
 ## Deployment
 
 GitHub Pages publishes the site from GitHub Actions, not from a branch folder:

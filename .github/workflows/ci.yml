@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   assetlinks:
     name: Asset links
@@ -21,3 +25,18 @@ jobs:
         run: node --test 'scripts/**/*.test.mjs'
       - name: Check Android asset links
         run: node scripts/check-assetlinks.mjs docs
+
+  build:
+    name: Lint, test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run test:ci
+      - run: npm run build
