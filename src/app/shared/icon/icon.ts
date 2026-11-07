@@ -1,6 +1,26 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-export type IconName = 'arrow-right' | 'chevron' | 'github' | 'linkedin' | 'mail' | 'moon' | 'sun';
+export const ICON_NAMES = [
+  'arrow-right',
+  'book-open',
+  'braces',
+  'chevron',
+  'dices',
+  'external-link',
+  'gamepad',
+  'github',
+  'globe',
+  'grid',
+  'link',
+  'linkedin',
+  'mail',
+  'moon',
+  'package',
+  'smartphone',
+  'sun',
+  'wallet',
+] as const;
+export type IconName = (typeof ICON_NAMES)[number];
 
 /** Brand marks are filled 16px drawings; everything else is a 24px stroke icon. */
 const FILLED: ReadonlySet<IconName> = new Set(['github', 'linkedin']);
@@ -24,6 +44,60 @@ const FILLED: ReadonlySet<IconName> = new Set(['github', 'linkedin']);
         @case ('arrow-right') {
           <path d="M5 12h14" />
           <path d="m12 5 7 7-7 7" />
+        }
+        @case ('book-open') {
+          <path d="M12 7v14" />
+          <path
+            d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"
+          />
+        }
+        @case ('braces') {
+          <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1" />
+          <path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1" />
+        }
+        @case ('dices') {
+          <rect x="2" y="10" width="12" height="12" rx="2" />
+          <path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6" />
+          <path d="M6 18h.01M10 14h.01M15 6h.01M18 9h.01" />
+        }
+        @case ('external-link') {
+          <path d="M15 3h6v6" />
+          <path d="M10 14 21 3" />
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+        }
+        @case ('gamepad') {
+          <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01" />
+          <path
+            d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59l-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258l-.017-.151A4 4 0 0 0 17.32 5z"
+          />
+        }
+        @case ('globe') {
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20" />
+        }
+        @case ('grid') {
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+        }
+        @case ('link') {
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+        }
+        @case ('package') {
+          <path
+            d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
+          />
+          <path d="M12 22V12M3.29 7 12 12l8.71-5M7.5 4.27l9 5.15" />
+        }
+        @case ('smartphone') {
+          <rect x="5" y="2" width="14" height="20" rx="2" />
+          <path d="M12 18h.01" />
+        }
+        @case ('wallet') {
+          <path
+            d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"
+          />
+          <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
         }
         @case ('chevron') {
           <path d="m6 9 6 6 6-6" />

@@ -3,8 +3,8 @@
 It will be built for both my personal practice and my portfolio.
 
 > **Rewrite in progress.** The site is being rebuilt with Angular 22 and static prerendering in
-> English, Portuguese and French. The shell, languages and design are live; the content sections
-> (projects, experience, blog) are placeholders for now.
+> English, Portuguese and French. The home page (About and featured projects) and the projects
+> page are live; experience and blog are placeholders for now.
 
 ## Development
 
@@ -54,6 +54,28 @@ The site is built once per language with `@angular/localize`:
 page, an HTML file declares the wrong `lang`, a page is a meta-refresh redirect stub, any internal
 link, hreflang URL or asset does not resolve to a served file, or a folder would shadow
 `/AdvancedSudoku/` (published on this domain by another repository).
+
+## Content
+
+Interface texts (navigation, buttons, headings) go through `@angular/localize`. The site's
+content lives in typed files instead, with every language side by side:
+
+| File                      | Holds                                                                  |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `src/content/profile.ts`  | Role line, About paragraphs, highlights and contact links              |
+| `src/content/projects.ts` | Projects (summary, stack, links, featured or in progress), Android app |
+| `public/images/`          | The photo, as WebP at 240 and 480 px                                   |
+
+- Texts are `Localized<string>` values (`{ en, 'pt-BR', fr }`): a missing language is a compile
+  error. Components pick the current one with the `CURRENT_LOCALE` token.
+- Why not translation files for content: a project summary is edited as a whole, in three
+  languages at once, and reads better next to its stack and links than spread over three JSON
+  files keyed by id.
+- `src/content/content.spec.ts` checks for empty texts, unique project ids, exactly three featured
+  projects, HTTPS links and a source link on every project.
+- Project order is the order of the list, and each card's sheet number (`P-01`) is its position.
+- Photos are exported without metadata (EXIF, GPS). Images are referenced from the site root
+  (`/images/...`), so the three language builds share the root copy.
 
 ## Design
 

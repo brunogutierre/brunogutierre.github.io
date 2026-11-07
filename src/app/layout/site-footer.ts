@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { PROFILE } from '../../content/profile';
 import { Icon } from '../shared/icon/icon';
 
 @Component({
@@ -9,19 +10,17 @@ import { Icon } from '../shared/icon/icon';
     <footer class="site-footer">
       <p class="copyright">
         <span class="brand-mark" aria-hidden="true"><app-icon name="chevron" /></span>
-        © {{ year }} Bruno Gutierre
+        © {{ year }} {{ profile.name }}
       </p>
       <ul class="links">
         <li>
-          <a href="https://github.com/brunogutierre"><app-icon name="github" />GitHub</a>
+          <a [href]="profile.links.github"><app-icon name="github" />GitHub</a>
         </li>
         <li>
-          <a href="https://www.linkedin.com/in/bruno-gutierre/"
-            ><app-icon name="linkedin" />LinkedIn</a
-          >
+          <a [href]="profile.links.linkedin"><app-icon name="linkedin" />LinkedIn</a>
         </li>
         <li>
-          <a href="mailto:brunorg@gmail.com"
+          <a [href]="'mailto:' + profile.links.email"
             ><app-icon name="mail" /><span i18n="@@footer.email">E-mail</span></a
           >
         </li>
@@ -93,5 +92,6 @@ import { Icon } from '../shared/icon/icon';
   `,
 })
 export class SiteFooter {
+  protected readonly profile = PROFILE;
   protected readonly year = new Date().getFullYear();
 }

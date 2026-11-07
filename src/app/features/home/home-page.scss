@@ -1,3 +1,5 @@
+@use 'breakpoints' as *;
+
 :host {
   display: block;
 }
@@ -92,23 +94,91 @@ h1 {
   position: absolute;
   inset-inline-end: var(--edge);
   inset-block-end: calc(var(--notch-d) - var(--photo-size) / 2);
-  display: grid;
-  place-items: center;
   inline-size: var(--photo-size);
   block-size: var(--photo-size);
   border: 6px solid var(--bg);
   border-radius: 50%;
   background: var(--surface-2);
   box-shadow: var(--shadow-2);
-  color: var(--primary);
-  font: var(--fw-black) calc(var(--photo-size) * 0.34) / 1 var(--font-display);
-  letter-spacing: var(--tracking-tight);
+  object-fit: cover;
 }
 
-.status {
+// The first section clears the half of the photo that hangs below the band.
+.sections {
+  display: grid;
+  gap: var(--sp-9);
   padding-block-start: calc(var(--photo-size) / 2 - var(--notch-d) + var(--sp-7));
+}
 
-  .eyebrow {
-    margin-block-end: var(--sp-3);
+.section-header {
+  display: grid;
+  gap: var(--sp-3);
+
+  h2 {
+    font-size: var(--fs-2xl);
   }
+}
+
+.about {
+  display: grid;
+  gap: var(--sp-6);
+}
+
+.about-text {
+  display: grid;
+  gap: var(--sp-4);
+  max-inline-size: 65ch;
+
+  p {
+    margin: 0;
+    font-size: var(--fs-lg);
+  }
+}
+
+.highlights {
+  display: grid;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    gap: var(--sp-1);
+    padding-block-start: var(--sp-4);
+    border-block-start: 2px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  strong {
+    color: var(--primary);
+    font: var(--fw-black) var(--fs-3xl) / 1 var(--font-display);
+    letter-spacing: var(--tracking-tight);
+  }
+}
+
+// From $bp-md: text on the left, the numbers in a column on the right.
+@media (min-width: $bp-md) {
+  .about {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    column-gap: var(--sp-8);
+  }
+
+  .section-header {
+    grid-column: 1 / -1;
+  }
+}
+
+.featured {
+  display: grid;
+  gap: var(--sp-5);
+
+  .section-header {
+    margin-block-end: var(--sp-2);
+  }
+}
+
+.all-projects {
+  justify-self: start;
+  --icon-size: 18px;
 }

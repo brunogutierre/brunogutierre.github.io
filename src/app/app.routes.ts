@@ -15,8 +15,8 @@ export const routes: Routes = [
     component: HomePage,
     data: {
       seo: {
-        title: $localize`:@@seo.home.title:Bruno Gutierre · Frontend and fullstack developer`,
-        description: $localize`:@@seo.home.description:Projects, experience and blog of Bruno Gutierre, a frontend and fullstack developer working with Angular and Java.`,
+        title: $localize`:@@seo.home.title:Bruno Gutierre · Senior software engineer`,
+        description: $localize`:@@seo.home.description:Bruno Gutierre is a senior software engineer in Montreal who works with Angular, TypeScript, Java and Spring Boot. Projects, experience and blog.`,
       } satisfies PageSeo,
     },
   },
