@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CURRENT_LOCALE, LOCALE_INFO, LOCALES, localizedPath } from '../core/i18n/locale';
-import { injectCurrentUrl } from '../core/routing/current-url';
+import { injectCurrentPage } from '../core/routing/current-page';
 
 /**
  * Links to the current page in every language. Each language is a separate build, so these are
- * plain links (a full page load), not router links.
+ * plain links (a full page load), not router links. A missing page links to each language's
+ * home instead: /404.html is served at any missing URL, which has no translation.
  */
 @Component({
   selector: 'app-language-switcher',
@@ -70,14 +71,14 @@ import { injectCurrentUrl } from '../core/routing/current-url';
 })
 export class LanguageSwitcher {
   private readonly current = inject(CURRENT_LOCALE);
-  private readonly url = injectCurrentUrl();
+  private readonly page = injectCurrentPage();
 
   protected readonly options = computed(() =>
     LOCALES.map((locale) => ({
       locale,
       short: LOCALE_INFO[locale].short,
       name: LOCALE_INFO[locale].name,
-      href: localizedPath(locale, this.url()),
+      href: localizedPath(locale, this.page().indexable ? this.page().url : '/'),
       current: locale === this.current,
     })),
   );

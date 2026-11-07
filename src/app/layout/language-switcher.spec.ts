@@ -18,7 +18,10 @@ describe('LanguageSwitcher', () => {
   async function render(url: string) {
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([{ path: '**', component: Host }]),
+        provideRouter([
+          { path: 'missing', component: Host, data: { seo: { noindex: true } } },
+          { path: '**', component: Host },
+        ]),
         { provide: CURRENT_LOCALE, useValue: 'fr' },
       ],
     });
@@ -46,5 +49,11 @@ describe('LanguageSwitcher', () => {
     expect(en.hasAttribute('aria-current')).toBe(false);
     expect(pt.textContent?.replace(/\s+/g, ' ').trim()).toBe('PT Português');
     expect(pt.getAttribute('lang')).toBe('pt-BR');
+  });
+
+  it('links each language home from a page that does not exist', async () => {
+    const root = await render('/missing');
+
+    expect(links(root).map((a) => a.getAttribute('href'))).toEqual(['/', '/pt/', '/fr/']);
   });
 });

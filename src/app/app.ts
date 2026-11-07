@@ -8,7 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { injectCurrentUrl } from './core/routing/current-url';
+import { injectCurrentPage } from './core/routing/current-page';
 import { SiteFooter } from './layout/site-footer';
 import { SiteHeader } from './layout/site-header';
 
@@ -29,7 +29,7 @@ import { SiteHeader } from './layout/site-header';
 })
 export class App {
   private readonly location = inject(Location);
-  private readonly url = injectCurrentUrl();
+  private readonly page = injectCurrentPage();
   private readonly main = viewChild.required<ElementRef<HTMLElement>>('main');
 
   /**
@@ -37,7 +37,7 @@ export class App {
    * link carries the current page path; with JavaScript it just moves focus to the content.
    */
   protected readonly skipHref = computed(
-    () => `${this.location.prepareExternalUrl(this.url())}#main`,
+    () => `${this.location.prepareExternalUrl(this.page().url)}#main`,
   );
 
   protected skipToMain(event: Event): void {
