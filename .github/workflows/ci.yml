@@ -24,7 +24,7 @@ jobs:
       - name: Test the guard scripts
         run: node --test 'scripts/**/*.test.mjs'
       - name: Check Android asset links
-        run: node scripts/check-assetlinks.mjs docs
+        run: node scripts/check-assetlinks.mjs site-root
 
   build:
     name: Lint, test and build
@@ -42,3 +42,7 @@ jobs:
       - run: npm run build
       - name: Check the prerendered site
         run: npm run check:dist
+      - name: Check Android asset links in the built site
+        run: >-
+          node scripts/check-assetlinks.mjs dist/personal-site/browser
+          --source site-root/.well-known/assetlinks.json

@@ -82,6 +82,8 @@ export function checkDist(siteDir) {
         errors.push(`missing ${posix.join(dir, page)} (${lang})`);
     }
   }
+  // GitHub Pages serves this single file for every missing path (see postbuild.mjs).
+  if (!isFile(join(siteDir, '404.html'))) errors.push('missing 404.html at the site root');
   const shadowing = readdirSync(siteDir).filter((name) =>
     FOREIGN_PATHS.some((foreign) => foreign.slice(1, -1).toLowerCase() === name.toLowerCase()),
   );
