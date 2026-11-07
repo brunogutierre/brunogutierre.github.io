@@ -39,7 +39,7 @@ describe('PostPage', () => {
     expect(root.querySelector('.lead')?.textContent).toBe('About ola.');
     expect(root.querySelector('app-post-meta time')).not.toBeNull();
     expect(root.querySelector('.chips li')?.textContent).toBe('angular');
-    expect(root.querySelector('app-post-body')?.textContent).toBe('Corpo');
+    expect(root.querySelector('app-post-body .prose')?.textContent).toBe('Corpo');
     expect(root.querySelector('.back')?.getAttribute('href')).toBe('/blog/');
     expect(root.querySelector('.translations')).toBeNull();
   });

@@ -42,7 +42,7 @@ describe('blog routes', () => {
     const root = await navigate('/blog/hello');
 
     expect(root.querySelector('h1')?.textContent).toBe('Hello');
-    expect(root.querySelector('app-post-body')?.innerHTML).toBe('<p>Hi!</p>');
+    expect(root.querySelector('app-post-body .prose')?.innerHTML).toBe('<p>Hi!</p>');
     expect(leaf().data['seo']).toEqual({
       title: 'Hello · Bruno Gutierre',
       description: 'About hello.',

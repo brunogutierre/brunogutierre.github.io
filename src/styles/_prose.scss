@@ -117,15 +117,40 @@
   .code-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--sp-3);
-    min-block-size: 2.25rem;
+    min-block-size: 2.75rem;
     padding-inline: var(--sp-4) var(--sp-2);
     border-block-end: 1px solid var(--border);
     color: var(--text-muted);
     font: var(--fs-xs) / 1 var(--font-mono);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
+  }
+
+  // added by app-post-body in the browser
+  .copy {
+    min-block-size: 2rem;
+    margin-inline-start: auto;
+    padding: 0 var(--sp-3);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    &.copied {
+      border-color: var(--primary);
+      background: var(--primary-tint);
+      color: var(--primary);
+    }
   }
 
   pre {
@@ -168,6 +193,10 @@
 
     pre {
       white-space: pre-wrap;
+    }
+
+    .copy {
+      display: none;
     }
 
     .code-block,

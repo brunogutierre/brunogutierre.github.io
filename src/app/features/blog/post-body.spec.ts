@@ -11,7 +11,9 @@ describe('PostBody', () => {
   const HTML =
     '<h2 id="intro" tabindex="-1"><a class="header-anchor" href="#intro">Intro</a></h2>' +
     '<pre style="color:light-dark(#1f2328, #e6edf3)"><code>x</code></pre>' +
-    '<p><a href="/projects/">Projects</a></p>';
+    '<p><a href="/projects/">Projects</a></p>' +
+    '<div class="code-block"><div class="code-head"><span class="code-lang">ts</span></div>' +
+    '<pre><code><span class="line">const a = 1;</span>\n<span class="line">a;</span></code></pre></div>';
 
   function render() {
     TestBed.configureTestingModule({
@@ -72,5 +74,48 @@ describe('PostBody', () => {
       false,
     );
     expect(navigate).not.toHaveBeenCalled();
+  });
+
+  describe('copy buttons', () => {
+    afterEach(() => Reflect.deleteProperty(navigator, 'clipboard'));
+
+    function withClipboard(writeText: (text: string) => Promise<void>) {
+      Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    }
+
+    it('copies the code of its block and says so', async () => {
+      const writeText = vi.fn().mockResolvedValue(undefined);
+      withClipboard(writeText);
+      const { root } = render();
+      const button = root.querySelector<HTMLButtonElement>('.code-head button.copy')!;
+
+      button.click();
+      await Promise.resolve();
+
+      expect(writeText).toHaveBeenCalledWith('const a = 1;\na;');
+      expect(button.textContent).toBe('Copied');
+      await vi.waitFor(() =>
+        expect(root.querySelector('[role="status"]')?.textContent).toBe(
+          'Code copied to the clipboard',
+        ),
+      );
+    });
+
+    it('says when the browser refuses to copy', async () => {
+      withClipboard(() => Promise.reject(new Error('denied')));
+      const { root } = render();
+
+      root.querySelector<HTMLButtonElement>('button.copy')!.click();
+
+      await vi.waitFor(() =>
+        expect(root.querySelector('[role="status"]')?.textContent).toBe('Could not copy the code'),
+      );
+    });
+
+    it('adds no button where the clipboard is unavailable', () => {
+      const { root } = render();
+
+      expect(root.querySelector('button.copy')).toBeNull();
+    });
   });
 });
