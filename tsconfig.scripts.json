@@ -1,0 +1,16 @@
+// Type-checks the Node scripts written in TypeScript (.mts). Node runs them as they are, by
+// stripping the types, so only erasable syntax is allowed and imports keep their extension.
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "nodenext",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": ["scripts/**/*.mts"]
+}

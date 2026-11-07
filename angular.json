@@ -139,7 +139,8 @@
             "lintFilePatterns": [
               "src/**/*.ts",
               "src/**/*.html",
-              "scripts/**/*.mjs"
+              "scripts/**/*.mjs",
+              "scripts/**/*.mts"
             ]
           }
         },
