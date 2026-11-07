@@ -60,22 +60,38 @@ link, hreflang URL or asset does not resolve to a served file, or a folder would
 Interface texts (navigation, buttons, headings) go through `@angular/localize`. The site's
 content lives in typed files instead, with every language side by side:
 
-| File                      | Holds                                                                  |
-| ------------------------- | ---------------------------------------------------------------------- |
-| `src/content/profile.ts`  | Role line, About paragraphs, highlights and contact links              |
-| `src/content/projects.ts` | Projects (summary, stack, links, featured or in progress), Android app |
-| `public/images/`          | The photo, as WebP at 240 and 480 px                                   |
+| File                        | Holds                                                                  |
+| --------------------------- | ---------------------------------------------------------------------- |
+| `src/content/profile.ts`    | Role line, city, About paragraphs, highlights and contact links        |
+| `src/content/projects.ts`   | Projects (summary, stack, links, featured or in progress), Android app |
+| `src/content/experience.ts` | The CV: summary, jobs, skills, education and spoken languages          |
+| `public/images/`            | The photo, as WebP at 240 and 480 px                                   |
 
 - Texts are `Localized<string>` values (`{ en, 'pt-BR', fr }`): a missing language is a compile
   error. Components pick the current one with the `CURRENT_LOCALE` token.
 - Why not translation files for content: a project summary is edited as a whole, in three
   languages at once, and reads better next to its stack and links than spread over three JSON
   files keyed by id.
-- `src/content/content.spec.ts` checks for empty texts, unique project ids, exactly three featured
-  projects, HTTPS links and a source link on every project.
+- `src/content/content.spec.ts` checks for empty texts, unique ids, exactly three featured
+  projects, HTTPS links, a source link on every project, the same number of achievements in every
+  language, and CV dates (`YYYY` or `YYYY-MM`, newest first).
+- Technology names (project stacks, job stacks, skills) are plain strings: they read the same in
+  every language.
 - Project order is the order of the list, and each card's sheet number (`P-01`) is its position.
 - Photos are exported without metadata (EXIF, GPS). Images are referenced from the site root
   (`/images/...`), so the three language builds share the root copy.
+
+### Printable CV
+
+The experience page is the CV. There is no PDF in the repository: the browser makes one from the
+page, so the CV is always the same as the site and exists in each language.
+
+- "Print or save as PDF" calls `window.print()`. Ctrl+P works the same way.
+- Print styles (`src/styles/_print.scss`, plus the page's own `@media print` block) hide the
+  site header and footer, force light colors, show name and contacts on top (`.print-only`) and
+  turn chips into comma-separated lines. The CV fits on two pages in A4 and Letter.
+- During printing, the document title becomes "Bruno Gutierre - CV" (`beforeprint` /
+  `afterprint`), so the PDF gets a useful file name.
 
 ## Design
 
