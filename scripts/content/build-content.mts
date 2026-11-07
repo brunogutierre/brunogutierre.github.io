@@ -1,12 +1,12 @@
 // Turns content/blog/<slug>/<locale>.md into TypeScript the Angular build compiles:
 //   src/generated/content/blog.ts                  index of posts per language + lazy loaders
-//   src/generated/content/posts/<locale>/<slug>.ts one module per post: its HTML, a lazy chunk
+//   src/generated/content/posts/<locale>/<slug>.ts one module per post (HTML, table of contents)
 // Usage: node scripts/content/build-content.mts [--drafts]
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { type Frontmatter, parsePost, SLUG } from './frontmatter.mts';
-import { createRenderer, readingMinutes } from './markdown.mts';
+import { createRenderer, readingMinutes, type TocEntry } from './markdown.mts';
 
 /**
  * Same list as `LOCALES` in src/app/core/i18n/locale.ts. If they drift, the generated index no
@@ -20,6 +20,7 @@ export interface Post {
   readonly locale: Locale;
   readonly frontmatter: Frontmatter;
   readonly html: string;
+  readonly toc: readonly TocEntry[];
   readonly readingMinutes: number;
 }
 
@@ -67,8 +68,15 @@ export async function readPosts(dir: string, { drafts }: { drafts: boolean }): P
       }
       try {
         const { frontmatter, body } = parsePost(await readFile(join(dir, where), 'utf8'));
-        const post = { slug: entry.name, locale, frontmatter, html: render(body) };
-        posts.push({ ...post, readingMinutes: readingMinutes(body) });
+        const { html, toc } = render(body);
+        posts.push({
+          slug: entry.name,
+          locale,
+          frontmatter,
+          html,
+          toc,
+          readingMinutes: readingMinutes(body),
+        });
       } catch (error) {
         problems.push(`${where}: ${(error as Error).message.replaceAll('\n', '\n  ')}`);
       }
@@ -117,21 +125,26 @@ export function indexModule(posts: readonly Post[]): string {
     return `  '${locale}': {\n${lines.join('\n')}\n  },`;
   });
   return `${HEADER}
-import type { PostSummary } from '../../app/core/blog/post';
+import type { PostContent, PostSummary } from '../../app/core/blog/post';
 import type { Locale } from '../../app/core/i18n/locale';
 
 /** Posts per language, newest first. */
 export const POSTS: Readonly<Record<Locale, readonly PostSummary[]>> = ${JSON.stringify(index, null, 2)};
 
-/** The HTML of each post: one lazy chunk per post and language. */
-export const POST_BODIES: Readonly<Record<Locale, Readonly<Record<string, () => Promise<string>>>>> = {
+/** The content of each post (HTML and table of contents): one lazy chunk per post and language. */
+export const POST_BODIES: Readonly<Record<Locale, Readonly<Record<string, () => Promise<PostContent>>>>> = {
 ${loaders.join('\n')}
 };
 `;
 }
 
-export function postModule(post: Post): string {
-  return `${HEADER}\nexport default ${JSON.stringify(post.html)};\n`;
+export function postModule({ html, toc }: Post): string {
+  return `${HEADER}
+import type { PostContent } from '../../../../app/core/blog/post';
+
+const content: PostContent = ${JSON.stringify({ html, toc }, null, 2)};
+export default content;
+`;
 }
 
 /** Replaces `outDir` with the index and one module per post. */

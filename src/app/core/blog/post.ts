@@ -20,3 +20,21 @@ export interface PostSummary {
   /** Only ever true in development builds; production builds leave drafts out. */
   readonly draft: boolean;
 }
+
+/** A `##` or `###` heading of a post, for its table of contents. */
+export interface TocEntry {
+  readonly level: 2 | 3;
+  /** The heading id: its anchor in the page. */
+  readonly id: string;
+  readonly text: string;
+}
+
+/** A post's lazy chunk (`src/generated/content/posts/<locale>/<slug>.ts`). */
+export interface PostContent {
+  /**
+   * Rendered at build time from the repository's Markdown, where raw HTML is escaped and
+   * `javascript:` links are dropped: safe to insert as is.
+   */
+  readonly html: string;
+  readonly toc: readonly TocEntry[];
+}
