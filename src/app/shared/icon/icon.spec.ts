@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Icon, IconName } from './icon';
+import { Icon, ICON_NAMES, IconName } from './icon';
 
 describe('Icon', () => {
   function render(name: IconName) {
@@ -27,7 +27,7 @@ describe('Icon', () => {
     expect(svg.classList.contains('filled')).toBe(true);
   });
 
-  it.each<IconName>(['chevron', 'linkedin', 'mail', 'moon', 'sun'])('draws %s', (name) => {
+  it.each(ICON_NAMES)('draws %s', (name) => {
     expect(render(name).children.length).toBeGreaterThan(0);
   });
 });
