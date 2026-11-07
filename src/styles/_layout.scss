@@ -1,5 +1,6 @@
 // Page layout pieces shared by every page.
 .page {
+  display: block; // also used as a host class on page components
   inline-size: min(100% - 2 * var(--page-pad), var(--content-max));
   margin-inline: auto;
   padding-block: clamp(3rem, 2rem + 4vw, 6rem);

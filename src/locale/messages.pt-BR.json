@@ -23,6 +23,13 @@
     "shell.languages": "Idiomas",
     "footer.email": "E-mail",
     "shell.nav": "Principal",
-    "theme.dark": "Tema escuro"
+    "theme.dark": "Tema escuro",
+    "home.greeting": "Olá, eu sou",
+    "home.ctaProjects": "Ver projetos",
+    "home.statusEyebrow": "00 / status",
+    "projects.eyebrow": "01 / projetos",
+    "experience.eyebrow": "02 / experiência",
+    "blog.eyebrow": "03 / blog",
+    "notFound.eyebrow": "404 / não encontrada"
   }
 }
