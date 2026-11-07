@@ -1,6 +1,8 @@
+<div class="progress screen-only" aria-hidden="true"></div>
+
 <article class="post">
   <header class="post-header">
-    <a class="back" routerLink="/blog">
+    <a class="back screen-only" routerLink="/blog">
       <app-icon name="arrow-left" /><span i18n="@@post.back">All posts</span>
     </a>
     <h1>{{ summary().title }}</h1>
@@ -14,7 +16,7 @@
       </ul>
     }
     @if (translations().length) {
-      <p class="translations">
+      <p class="translations screen-only">
         <app-icon name="globe" /><span i18n="@@post.translations">Read in</span>
         @for (translation of translations(); track translation.locale) {
           <a
@@ -30,7 +32,7 @@
 
   @if (sections().length) {
     <!-- "_toc": heading ids made from post titles never contain "_" -->
-    <nav class="toc" aria-labelledby="_toc">
+    <nav class="toc screen-only" aria-labelledby="_toc">
       <h2 id="_toc" i18n="@@post.toc">On this page</h2>
       <ol>
         @for (section of sections(); track section.entry.id) {
@@ -55,7 +57,7 @@
 </article>
 
 @if (neighbors().older || neighbors().newer) {
-  <nav class="neighbors" aria-label="More posts" i18n-aria-label="@@post.more">
+  <nav class="neighbors screen-only" aria-label="More posts" i18n-aria-label="@@post.more">
     @if (neighbors().older; as older) {
       <a class="older" [routerLink]="['/blog', older.slug]">
         <span class="direction">
