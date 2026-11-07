@@ -1,13 +1,50 @@
+import { LocationStrategy, TrailingSlashPathLocationStrategy } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { App } from './app';
+import { routes } from './app.routes';
 
-describe('App', () => {
-  it('renders the name as the page heading', async () => {
-    TestBed.configureTestingModule({ imports: [App], providers: [provideRouter([])] });
+describe('App shell', () => {
+  async function render(url: string) {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter(routes),
+        { provide: LocationStrategy, useClass: TrailingSlashPathLocationStrategy },
+      ],
+    });
     const fixture = TestBed.createComponent(App);
+    await TestBed.inject(Router).navigateByUrl(url);
     await fixture.whenStable();
-    const heading = (fixture.nativeElement as HTMLElement).querySelector('h1');
-    expect(heading?.textContent).toBe('Bruno Gutierre');
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('renders the header, the routed page and the footer', async () => {
+    const root = await render('/');
+
+    expect(root.querySelector('.brand')?.textContent).toBe('Bruno Gutierre');
+    expect(root.querySelectorAll('header nav[aria-label="Main"] a')).toHaveLength(3);
+    expect(root.querySelector('main h1')?.textContent).toBe('Bruno Gutierre');
+    expect(root.querySelector('footer a[href^="mailto:"]')).not.toBeNull();
+  });
+
+  it.each([
+    ['/projects', 'Projects'],
+    ['/experience', 'Experience'],
+    ['/blog', 'Blog'],
+    ['/404', 'Page not found'],
+    ['/does/not/exist', 'Page not found'],
+  ])('routes %s to its page', async (url, heading) => {
+    const root = await render(url);
+    expect(root.querySelector('main h1')?.textContent).toBe(heading);
+  });
+
+  it('points the skip link at the current page and moves focus to the content', async () => {
+    const root = await render('/projects');
+    const skip = root.querySelector<HTMLAnchorElement>('.skip-link');
+    const main = root.querySelector('main');
+
+    expect(skip?.getAttribute('href')).toBe('/projects/#main');
+    skip?.click();
+    expect(document.activeElement).toBe(main);
   });
 });

@@ -1,0 +1,27 @@
+{
+  "locale": "en",
+  "translations": {
+    "seo.notFound.title": "Page not found",
+    "seo.notFound.description": "This page does not exist on Bruno Gutierre's site.",
+    "seo.home.title": "Bruno Gutierre · Frontend and fullstack developer",
+    "seo.home.description": "Projects, experience and blog of Bruno Gutierre, a frontend and fullstack developer working with Angular and Java.",
+    "nav.projects": "Projects",
+    "seo.projects.description": "Study and portfolio projects by Bruno Gutierre: Angular apps and libraries, Spring Boot APIs and Android apps.",
+    "nav.experience": "Experience",
+    "seo.experience.description": "Professional experience and skills of Bruno Gutierre, with a printable CV.",
+    "nav.blog": "Blog",
+    "seo.blog.description": "Notes by Bruno Gutierre on lessons learned while building software.",
+    "shell.skip": "Skip to content",
+    "blog.soon": "Coming soon: notes on what I learn from each project.",
+    "experience.soon": "Coming soon: my professional timeline and a printable CV.",
+    "home.role": "Frontend and fullstack developer: Angular, Java and, lately, Python.",
+    "home.construction": "The new site is under construction.",
+    "notFound.title": "Page not found",
+    "notFound.text": "The page you are looking for does not exist or has moved.",
+    "notFound.home": "Back to the home page",
+    "projects.soon": " Coming soon: the projects I build to learn and to show what I can do. ",
+    "shell.languages": "Languages",
+    "footer.email": "E-mail",
+    "shell.nav": "Main"
+  }
+}
