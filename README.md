@@ -3,8 +3,8 @@
 It will be built for both my personal practice and my portfolio.
 
 > **Rewrite in progress.** The site is being rebuilt with Angular 22 and static prerendering in
-> English, Portuguese and French. Until the new app replaces it, the committed `docs/` folder
-> (the 2021 build) is what gets published.
+> English, Portuguese and French. The shell, languages and design are live; the content sections
+> (projects, experience, blog) are placeholders for now.
 
 ## Development
 
@@ -87,10 +87,17 @@ link, hreflang URL or asset does not resolve to a served file, or a folder would
 
 GitHub Pages publishes the site from GitHub Actions, not from a branch folder:
 
-- [`deploy.yml`](.github/workflows/deploy.yml) runs on every push to `main` and on demand. It
-  checks the asset links file (below), uploads the site directory as the Pages artifact, deploys
-  it, and then verifies the file that is actually being served.
-- [`ci.yml`](.github/workflows/ci.yml) runs the same checks on every pull request.
+- [`deploy.yml`](.github/workflows/deploy.yml) runs on every push to `main` and on demand: it
+  builds every language, checks the output (`check:dist` and the asset links file, below),
+  uploads it as the Pages artifact, deploys it, and then verifies the live site.
+- [`ci.yml`](.github/workflows/ci.yml) runs the same build and checks on every pull request.
+- `npm run build` ends with [`postbuild.mjs`](scripts/postbuild.mjs) (the npm `postbuild` hook):
+  - it copies [`site-root/`](site-root) into the site root. Files that must exist once, at the
+    domain root, live there instead of `public/`, which the i18n build copies into every language
+    folder;
+  - it publishes the prerendered English 404 page as `/404.html`, the single file GitHub Pages
+    serves for any missing path. On a missing page the language switcher links to each
+    language's home, since the missing URL has no translation.
 
 ## Android App Links
 
@@ -108,6 +115,9 @@ redirect, those links stop opening the app. It is guarded in three layers:
 
 Rules that keep it working:
 
+- The file lives in [`site-root/.well-known/`](site-root/.well-known) and is excluded from
+  Prettier: it is published byte for byte, and the live check compares its sha256.
+
 - The Pages artifact is uploaded with `include-hidden-files: true`; since
   `actions/upload-pages-artifact` v4, dot folders such as `.well-known/` are left out by default.
 - No custom domain on this repository: `brunogutierre.github.io` would then redirect, and App
@@ -115,10 +125,10 @@ Rules that keep it working:
 - GitHub disables scheduled workflows after 60 days without repository activity; re-enable the
   monitor in the Actions tab if that happens.
 
-Checks can be run locally (Node 24, no dependencies):
+Checks can be run locally (Node 24; the guard scripts have no dependencies):
 
 ```bash
 node --test 'scripts/**/*.test.mjs'
-node scripts/check-assetlinks.mjs docs
-scripts/verify-live-assetlinks.sh https://brunogutierre.github.io/.well-known/assetlinks.json docs/.well-known/assetlinks.json
+npm run build && node scripts/check-assetlinks.mjs dist/personal-site/browser --source site-root/.well-known/assetlinks.json
+scripts/verify-live-assetlinks.sh https://brunogutierre.github.io/.well-known/assetlinks.json site-root/.well-known/assetlinks.json
 ```

@@ -21,5 +21,5 @@ jobs:
       - run: >-
           scripts/verify-live-assetlinks.sh
           https://brunogutierre.github.io/.well-known/assetlinks.json
-          docs/.well-known/assetlinks.json
+          site-root/.well-known/assetlinks.json
           6 30

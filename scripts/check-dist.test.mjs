@@ -16,6 +16,7 @@ function site(overrides = {}) {
     'styles.css': '',
     'index.html': page('en', '/', '<a href="/pt/">PT</a><a href="/404/">x</a>'),
     '404/index.html': page('en', '/'),
+    '404.html': page('en', '/'),
     'pt/styles.css': '',
     'pt/index.html': page('pt-BR', '/pt/', '<a href="https://brunogutierre.github.io/fr/">FR</a>'),
     'pt/404/index.html': page('pt-BR', '/pt/'),
@@ -66,6 +67,10 @@ describe('checkDist', () => {
 
   it('reports a missing locale page', () => {
     assert.match(checkDist(site({ 'fr/404/index.html': null })).join(), /missing fr\/404/);
+  });
+
+  it('reports a missing root 404.html', () => {
+    assert.match(checkDist(site({ '404.html': null })).join(), /missing 404.html/);
   });
 
   it('reports a wrong or missing lang', () => {

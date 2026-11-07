@@ -7,6 +7,7 @@
     "start:pt": "ng serve --configuration development-pt",
     "start:fr": "ng serve --configuration development-fr",
     "build": "ng build",
+    "postbuild": "node scripts/postbuild.mjs dist/personal-site/browser",
     "check:dist": "node scripts/check-dist.mjs dist/personal-site/browser",
     "watch": "ng build --watch --configuration development",
     "i18n:extract": "ng extract-i18n",

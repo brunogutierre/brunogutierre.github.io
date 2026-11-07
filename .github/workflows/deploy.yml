@@ -16,9 +16,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SITE_DIR: docs
-  ASSETLINKS_SOURCE: docs/.well-known/assetlinks.json
-  ASSETLINKS_URL: https://brunogutierre.github.io/.well-known/assetlinks.json
+  SITE_DIR: dist/personal-site/browser
+  ASSETLINKS_SOURCE: site-root/.well-known/assetlinks.json
+  SITE_URL: https://brunogutierre.github.io
 
 jobs:
   build:
@@ -29,6 +29,12 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          cache: npm
+      - run: npm ci
+      # Prerenders every language, then (postbuild) adds the root-only files and /404.html.
+      - run: npm run build
+      - name: Check the prerendered site
+        run: npm run check:dist
       # The Advanced Sudoku Android app verifies its App Links against this file:
       # never publish a site without it.
       - name: Check Android asset links
@@ -51,9 +57,17 @@ jobs:
         uses: actions/deploy-pages@v5
 
   verify:
-    name: Verify live asset links
+    name: Verify the live site
     needs: deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - run: scripts/verify-live-assetlinks.sh "$ASSETLINKS_URL" "$ASSETLINKS_SOURCE"
+      - name: Asset links
+        run: scripts/verify-live-assetlinks.sh "$SITE_URL/.well-known/assetlinks.json" "$ASSETLINKS_SOURCE"
+      - name: Home page in every language
+        run: |
+          for path in / /pt/ /fr/; do
+            curl --fail --silent --show-error --output /dev/null \
+              --retry 20 --retry-delay 15 --retry-all-errors "$SITE_URL$path"
+            echo "OK: $SITE_URL$path"
+          done
