@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LanguageSwitcher } from './language-switcher';
+import { ThemeToggle } from './theme-toggle';
 
 @Component({
   selector: 'app-site-header',
-  imports: [RouterLink, RouterLinkActive, LanguageSwitcher],
+  imports: [RouterLink, RouterLinkActive, LanguageSwitcher, ThemeToggle],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="site-header">
@@ -41,6 +42,7 @@ import { LanguageSwitcher } from './language-switcher';
         </ul>
       </nav>
       <app-language-switcher />
+      <app-theme-toggle />
     </header>
   `,
 })

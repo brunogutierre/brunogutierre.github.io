@@ -22,6 +22,7 @@
     "projects.soon": " Coming soon: the projects I build to learn and to show what I can do. ",
     "shell.languages": "Languages",
     "footer.email": "E-mail",
-    "shell.nav": "Main"
+    "shell.nav": "Main",
+    "theme.dark": "Dark theme"
   }
 }
