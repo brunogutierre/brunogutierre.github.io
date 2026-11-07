@@ -67,3 +67,21 @@
   padding: 0;
   list-style: none;
 }
+
+// Mono chips: the stack of a project or a job, a group of skills
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: var(--sp-1) var(--sp-3);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+    color: var(--text-muted);
+    font: var(--fs-xs) / var(--lh-snug) var(--font-mono);
+  }
+}

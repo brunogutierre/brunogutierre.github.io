@@ -210,7 +210,8 @@ export const SKILLS: readonly SkillGroup[] = [
   {
     label: { en: 'Frontend', 'pt-BR': 'Frontend', fr: 'Front-end' },
     skills: [
-      'Angular (Signals, standalone components, control flow)',
+      'Angular',
+      'Angular Signals',
       'TypeScript',
       'JavaScript',
       'RxJS',

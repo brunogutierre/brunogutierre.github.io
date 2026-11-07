@@ -33,7 +33,7 @@ const LINKS: Readonly<Record<ProjectLinkKind, { label: string; icon: IconName }>
             >, a study project from {{ origin.year }}.
           </p>
         }
-        <ul class="stack" aria-label="Technologies" i18n-aria-label="@@projects.stack">
+        <ul class="chips" aria-label="Technologies" i18n-aria-label="@@projects.stack">
           @for (tech of project().stack; track tech) {
             <li>{{ tech }}</li>
           }
@@ -121,23 +121,6 @@ const LINKS: Readonly<Record<ProjectLinkKind, { label: string; icon: IconName }>
     .origin {
       color: var(--text-muted);
       font-size: var(--fs-sm);
-    }
-
-    .stack {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--sp-2);
-      margin: 0;
-      padding: 0;
-      list-style: none;
-
-      li {
-        padding: var(--sp-1) var(--sp-3);
-        border: 1px solid var(--border);
-        border-radius: var(--r-full);
-        color: var(--text-muted);
-        font: var(--fs-xs) / var(--lh-snug) var(--font-mono);
-      }
     }
 
     // pushed to the bottom, so the links of a row of cards line up

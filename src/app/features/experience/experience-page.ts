@@ -1,21 +1,23 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CV_SUMMARY, EDUCATION, JOBS, SKILLS, SPOKEN_LANGUAGES } from '../../../content/experience';
+import { CURRENT_LOCALE } from '../../core/i18n/locale';
 import { Icon } from '../../shared/icon/icon';
+import { Period } from './period';
 
+/** The CV: summary, a timeline of jobs, then skills, education and languages. */
 @Component({
   selector: 'app-experience-page',
-  imports: [Icon],
+  imports: [Icon, Period],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'page' },
-  template: `
-    <div class="page-header">
-      <p class="eyebrow">
-        <app-icon name="chevron" /><span i18n="@@experience.eyebrow">02 / experience</span>
-      </p>
-      <h1 i18n="@@nav.experience">Experience</h1>
-      <p class="lead" i18n="@@experience.soon">
-        Coming soon: my professional timeline and a printable CV.
-      </p>
-    </div>
-  `,
+  templateUrl: './experience-page.html',
+  styleUrl: './experience-page.scss',
 })
-export class ExperiencePage {}
+export class ExperiencePage {
+  protected readonly locale = inject(CURRENT_LOCALE);
+  protected readonly summary = CV_SUMMARY;
+  protected readonly jobs = JOBS;
+  protected readonly skills = SKILLS;
+  protected readonly education = EDUCATION;
+  protected readonly languages = SPOKEN_LANGUAGES;
+}
