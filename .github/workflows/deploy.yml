@@ -7,8 +7,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # One deployment at a time; never cancel a deployment that is already running.
 concurrency:
@@ -24,8 +22,11 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -49,6 +50,11 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only this job can publish; the build job (which runs dependency install scripts) cannot.
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -60,14 +66,18 @@ jobs:
     name: Verify the live site
     needs: deploy
     runs-on: ubuntu-latest
+    # Never hold the pages concurrency group for long: later deployments wait for it.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Asset links
         run: scripts/verify-live-assetlinks.sh "$SITE_URL/.well-known/assetlinks.json" "$ASSETLINKS_SOURCE"
       - name: Home page in every language
         run: |
           for path in / /pt/ /fr/; do
-            curl --fail --silent --show-error --output /dev/null \
+            curl --fail --silent --show-error --output /dev/null --max-time 20 \
               --retry 20 --retry-delay 15 --retry-all-errors "$SITE_URL$path"
             echo "OK: $SITE_URL$path"
           done

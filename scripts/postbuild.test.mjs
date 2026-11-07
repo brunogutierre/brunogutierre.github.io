@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
@@ -32,8 +32,8 @@ describe('finalizeSite', () => {
 
   it('fails loudly when the 404 page was not prerendered', () => {
     const { site, root } = setup();
-    writeFileSync(join(site, 'keep'), '');
-    assert.throws(() => finalizeSite(join(site, 'missing'), root));
+    rmSync(join(site, '404'), { recursive: true });
+    assert.throws(() => finalizeSite(site, root), /ENOENT/);
     assert.equal(existsSync(join(site, '404.html')), false);
   });
 });
