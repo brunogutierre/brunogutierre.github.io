@@ -4,13 +4,15 @@
 //   /.well-known/assetlinks.json (public/ would be copied into every language folder instead);
 // - copies src/generated/site/ (written by npm run content) the same way: each language's feed;
 // - publishes the prerendered English 404 page as /404.html, the single file GitHub Pages serves
-//   for every missing path, in every language folder.
+//   for every missing path, in every language folder;
+// - writes /sitemap.xml from the prerendered pages (sitemap.mjs).
 //
 // Usage: node scripts/postbuild.mjs <site-dir> [<files-dir>...]
 
-import { copyFileSync, cpSync } from 'node:fs';
+import { copyFileSync, cpSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildSitemap } from './sitemap.mjs';
 
 export const FILES_DIRS = ['site-root', 'src/generated/site'];
 
@@ -18,6 +20,7 @@ export const FILES_DIRS = ['site-root', 'src/generated/site'];
 export function finalizeSite(siteDir, filesDirs = FILES_DIRS) {
   for (const dir of filesDirs) cpSync(dir, siteDir, { recursive: true });
   copyFileSync(join(siteDir, '404', 'index.html'), join(siteDir, '404.html'));
+  writeFileSync(join(siteDir, 'sitemap.xml'), buildSitemap(siteDir));
 }
 
 if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
@@ -27,6 +30,6 @@ if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
     process.exitCode = 2;
   } else {
     finalizeSite(siteDir, filesDirs.length ? filesDirs : FILES_DIRS);
-    console.log(`site finalized: ${siteDir} (root files, feeds and 404.html)`);
+    console.log(`site finalized: ${siteDir} (root files, feeds, 404.html, sitemap.xml)`);
   }
 }

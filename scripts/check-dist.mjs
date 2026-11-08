@@ -84,8 +84,10 @@ export function checkDist(siteDir) {
         errors.push(`missing ${posix.join(dir, page)} (${lang})`);
     }
   }
-  // GitHub Pages serves this single file for every missing path (see postbuild.mjs).
-  if (!isFile(join(siteDir, '404.html'))) errors.push('missing 404.html at the site root');
+  // GitHub Pages serves 404.html for every missing path; postbuild.mjs writes it and the sitemap.
+  for (const file of ['404.html', 'sitemap.xml', 'robots.txt']) {
+    if (!isFile(join(siteDir, file))) errors.push(`missing ${file} at the site root`);
+  }
   const shadowing = readdirSync(siteDir).filter((name) =>
     FOREIGN_PATHS.some((foreign) => foreign.slice(1, -1).toLowerCase() === name.toLowerCase()),
   );

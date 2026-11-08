@@ -42,6 +42,12 @@ describe('finalizeSite', () => {
     assert.equal(readFileSync(join(site, '404.html'), 'utf8'), '<h1>Page not found</h1>');
   });
 
+  it('writes the sitemap', () => {
+    const { site, root } = setup();
+    finalizeSite(site, [root]);
+    assert.match(readFileSync(join(site, 'sitemap.xml'), 'utf8'), /<urlset /);
+  });
+
   it('fails loudly when the 404 page was not prerendered', () => {
     const { site, root } = setup();
     rmSync(join(site, '404'), { recursive: true });

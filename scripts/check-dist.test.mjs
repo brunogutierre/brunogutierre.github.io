@@ -17,6 +17,8 @@ function site(overrides = {}) {
     'index.html': page('en', '/', '<a href="/pt/">PT</a><a href="/404/">x</a>'),
     '404/index.html': page('en', '/'),
     '404.html': page('en', '/'),
+    'sitemap.xml': '<urlset/>',
+    'robots.txt': '',
     'pt/styles.css': '',
     'pt/index.html': page('pt-BR', '/pt/', '<a href="https://brunogutierre.github.io/fr/">FR</a>'),
     'pt/404/index.html': page('pt-BR', '/pt/'),
@@ -71,6 +73,10 @@ describe('checkDist', () => {
 
   it('reports a missing root 404.html', () => {
     assert.match(checkDist(site({ '404.html': null })).join(), /missing 404.html/);
+    assert.deepEqual(checkDist(site({ 'sitemap.xml': null, 'robots.txt': null })), [
+      'missing sitemap.xml at the site root',
+      'missing robots.txt at the site root',
+    ]);
   });
 
   it('reports a wrong or missing lang', () => {
