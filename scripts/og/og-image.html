@@ -1,0 +1,148 @@
+<!doctype html>
+<!--
+  Open Graph image of the site (1200×630), one per language: the language comes from the URL
+  hash (#en, #pt-BR, #fr). Rendered into site-root/og/<locale>.jpg, see the README ("Link
+  previews"). The role is the one in the home page title (seo.home.title).
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Open Graph image</title>
+    <style>
+      @font-face {
+        font-family: 'Bricolage Grotesque';
+        src: url('../../public/fonts/bricolage-grotesque-latin-opsz-normal.woff2') format('woff2');
+        font-weight: 200 800;
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('../../public/fonts/inter-latin-wght-normal.woff2') format('woff2');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('../../public/fonts/inter-latin-ext-wght-normal.woff2') format('woff2');
+        font-weight: 100 900;
+        unicode-range: U+0100-024F;
+      }
+      @font-face {
+        font-family: 'JetBrains Mono';
+        src: url('../../public/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2');
+        font-weight: 100 800;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        inline-size: 1200px;
+        block-size: 630px;
+        overflow: hidden;
+      }
+
+      /* The hero gradient, light theme: white text only over the teal-to-green part. */
+      body {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 64px;
+        padding: 72px 88px;
+        background: linear-gradient(115deg, #26596e 0%, #097961 58%, #d2f487 112%);
+        color: #fff;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+
+      .brand {
+        position: absolute;
+        inset-block-start: 64px;
+        inset-inline-start: 88px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font:
+          500 22px / 1 'JetBrains Mono',
+          monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .brand svg {
+        inline-size: 30px;
+        block-size: 30px;
+      }
+
+      h1 {
+        margin: 0;
+        font:
+          800 112px / 0.92 'Bricolage Grotesque',
+          sans-serif;
+        letter-spacing: -0.035em;
+      }
+
+      .role {
+        margin: 28px 0 0;
+        font-size: 38px;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+
+      .stack {
+        margin: 20px 0 0;
+        font:
+          400 24px / 1.3 'JetBrains Mono',
+          monospace;
+        opacity: 0.92;
+      }
+
+      .url {
+        position: absolute;
+        inset-block-end: 56px;
+        inset-inline-start: 88px;
+        font:
+          500 24px / 1 'JetBrains Mono',
+          monospace;
+      }
+
+      img {
+        inline-size: 300px;
+        block-size: 300px;
+        border: 8px solid #fff;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 24px 48px rgb(15 42 46 / 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <p class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <span id="eyebrow">Portfolio · Blog</span>
+    </p>
+    <div>
+      <h1>Bruno<br />Gutierre</h1>
+      <p class="role" id="role">Senior software engineer</p>
+      <p class="stack">Angular · TypeScript · Java · Spring Boot</p>
+    </div>
+    <img src="../../public/images/bruno-gutierre-480.webp" alt="" />
+    <p class="url" id="url">brunogutierre.github.io</p>
+    <script>
+      const TEXTS = {
+        en: { role: 'Senior software engineer', eyebrow: 'Portfolio · Blog', url: '' },
+        'pt-BR': { role: 'Engenheiro de software sênior', eyebrow: 'Portfólio · Blog', url: 'pt/' },
+        fr: { role: 'Ingénieur logiciel senior', eyebrow: 'Portfolio · Blogue', url: 'fr/' },
+      };
+      const locale = location.hash.slice(1) || 'en';
+      const texts = TEXTS[locale];
+      document.documentElement.lang = locale;
+      document.getElementById('role').textContent = texts.role;
+      document.getElementById('eyebrow').textContent = texts.eyebrow;
+      document.getElementById('url').textContent = `brunogutierre.github.io/${texts.url}`;
+    </script>
+  </body>
+</html>

@@ -8,6 +8,8 @@ export interface Highlight {
 
 export interface Profile {
   readonly name: string;
+  /** Short job title: structured data, link preview images. */
+  readonly jobTitle: Localized<string>;
   /** One line under the name, in the home hero. */
   readonly role: Localized<string>;
   /** City, on the printed CV. */
@@ -24,6 +26,11 @@ export interface Profile {
 
 export const PROFILE: Profile = {
   name: 'Bruno Gutierre',
+  jobTitle: {
+    en: 'Senior software engineer',
+    'pt-BR': 'Engenheiro de software sênior',
+    fr: 'Ingénieur logiciel senior',
+  },
   role: {
     en: 'Senior software engineer focused on Angular, design systems and Java back ends.',
     'pt-BR': 'Engenheiro de software sênior, com foco em Angular, design systems e back-ends Java.',

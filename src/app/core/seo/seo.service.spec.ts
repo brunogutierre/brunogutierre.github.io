@@ -19,7 +19,7 @@ describe('SeoService', () => {
   });
 
   afterEach(() => {
-    head.querySelectorAll('meta, link').forEach((element) => element.remove());
+    head.querySelectorAll('meta, link, script').forEach((element) => element.remove());
   });
 
   it('writes title, description and Open Graph tags', () => {
@@ -31,6 +31,43 @@ describe('SeoService', () => {
     expect(attr('meta[property="og:site_name"]')).toBe('Bruno Gutierre');
     expect(attr('meta[property="og:locale"]')).toBe('pt_BR');
     expect(all('meta[property="og:locale:alternate"]', 'content')).toEqual(['en_US', 'fr_FR']);
+  });
+
+  it('gives every page the link preview image of its language', () => {
+    seo.apply('/projects', { title: 'T', description: 'D' });
+
+    expect(attr('meta[property="og:type"]')).toBe('website');
+    expect(attr('meta[property="og:image"]')).toBe('https://brunogutierre.github.io/og/pt-BR.jpg');
+    expect(attr('meta[property="og:image:width"]')).toBe('1200');
+    expect(attr('meta[property="og:image:alt"]')).toContain('Bruno Gutierre');
+    expect(attr('meta[name="twitter:card"]')).toBe('summary_large_image');
+  });
+
+  it('describes a blog post as an article, and drops those tags on the next page', () => {
+    const article = { published: '2026-11-07', modified: '2026-11-20', tags: ['angular', 'ssg'] };
+    seo.apply('/blog/post', { title: 'T', description: 'D', article });
+
+    expect(attr('meta[property="og:type"]')).toBe('article');
+    expect(attr('meta[property="article:published_time"]')).toBe('2026-11-07');
+    expect(attr('meta[property="article:modified_time"]')).toBe('2026-11-20');
+    expect(all('meta[property="article:tag"]', 'content')).toEqual(['angular', 'ssg']);
+
+    seo.apply('/blog', { title: 'B', description: 'B' });
+    expect(head.querySelector('meta[property^="article:"]')).toBeNull();
+  });
+
+  it('writes structured data as JSON-LD that no text can break out of', () => {
+    seo.apply('/', { title: 'T', description: 'D', jsonLd: { name: '</script><b>' } });
+    seo.apply('/', { title: 'T', description: 'D', jsonLd: { name: 'Bruno' } });
+
+    const scripts = head.querySelectorAll('script[type="application/ld+json"]');
+    expect(scripts).toHaveLength(1);
+    expect(JSON.parse(scripts[0].textContent ?? '')).toEqual({ name: 'Bruno' });
+
+    seo.apply('/', { title: 'T', description: 'D', jsonLd: { name: '</script>' } });
+    const text = head.querySelector('script[type="application/ld+json"]')?.textContent ?? '';
+    expect(text).not.toContain('<');
+    expect(JSON.parse(text)).toEqual({ name: '</script>' });
   });
 
   it('links the canonical URL and every language version with trailing slashes', () => {

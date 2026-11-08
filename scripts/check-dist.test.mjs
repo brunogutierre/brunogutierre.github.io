@@ -100,6 +100,22 @@ describe('checkDist', () => {
     ]);
   });
 
+  it('reports a link preview image that is not there', () => {
+    const og = (path) =>
+      page(
+        'en',
+        '/',
+        `<meta property="og:image" content="https://brunogutierre.github.io${path}">`,
+      );
+    const dir = site({
+      'og/en.jpg': '',
+      'index.html': og('/og/en.jpg'),
+      '404/index.html': og('/og/fr.jpg'),
+    });
+
+    assert.deepEqual(checkDist(dir), ['404/index.html: broken reference /og/fr.jpg']);
+  });
+
   it('reports a folder that would shadow /AdvancedSudoku/', () => {
     const errors = checkDist(site({ 'advancedsudoku/index.html': page('en', '/') }));
     assert.match(errors.join(), /advancedsudoku\/ would shadow/);

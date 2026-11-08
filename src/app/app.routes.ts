@@ -1,5 +1,8 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { CURRENT_LOCALE } from './core/i18n/locale';
 import { PageSeo, pageTitle } from './core/seo/seo.service';
+import { personJsonLd } from './core/seo/structured-data';
 import { HomePage } from './features/home/home-page';
 import { NotFoundPage } from './features/not-found/not-found-page';
 
@@ -13,11 +16,13 @@ export const routes: Routes = [
   {
     path: '',
     component: HomePage,
-    data: {
-      seo: {
+    // a resolver, as the structured data depends on the language
+    resolve: {
+      seo: (): PageSeo => ({
         title: $localize`:@@seo.home.title:Bruno Gutierre · Senior software engineer`,
         description: $localize`:@@seo.home.description:Bruno Gutierre is a senior software engineer in Montreal who works with Angular, TypeScript, Java and Spring Boot. Projects, experience and blog.`,
-      } satisfies PageSeo,
+        jsonLd: personJsonLd(inject(CURRENT_LOCALE)),
+      }),
     },
   },
   {

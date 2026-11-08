@@ -2,8 +2,9 @@
 // Checks the prerendered site before it is published:
 // - every locale has its home and 404 pages, and every HTML file declares the right lang;
 // - no file is a meta-refresh redirect stub (a known regression of i18n + prerendering);
-// - every internal reference (links, canonical/hreflang URLs, scripts, styles, images) resolves
-//   to a file GitHub Pages will serve, so a missing translation or chunk cannot ship;
+// - every internal reference (links, canonical/hreflang URLs, scripts, styles, images, the link
+//   preview image) resolves to a file GitHub Pages will serve, so a missing translation or chunk
+//   cannot ship;
 // - nothing shadows /AdvancedSudoku/, which another repository publishes on this domain.
 //
 // Usage: node scripts/check-dist.mjs <site-dir>
@@ -22,6 +23,7 @@ export const FOREIGN_PATHS = ['/AdvancedSudoku/'];
 
 const REFERENCE_TAG = /<(?:a|link|script|img|source)\b[^>]*>/gi;
 const REFERENCE_ATTR = /\s(?:href|src)="([^"]*)"/gi;
+const META_TAG = /<meta\b[^>]*>/gi;
 
 /** Lang expected for an HTML file, from its path relative to the site root. */
 export function expectedLang(relativePath) {
@@ -102,11 +104,17 @@ export function checkDist(siteDir) {
     }
     const baseHref = /<base\b[^>]*\shref="([^"]*)"/i.exec(html)?.[1] ?? `/${posix.dirname(file)}/`;
     const missing = new Set();
+    const references = [];
     for (const [tag] of html.matchAll(REFERENCE_TAG)) {
-      for (const [, reference] of tag.matchAll(REFERENCE_ATTR)) {
-        const sitePath = toSitePath(reference, baseHref);
-        if (sitePath && !servedFile(siteDir, sitePath)) missing.add(sitePath);
-      }
+      for (const [, reference] of tag.matchAll(REFERENCE_ATTR)) references.push(reference);
+    }
+    for (const [tag] of html.matchAll(META_TAG)) {
+      const image = /\sproperty="og:image"/.test(tag) && /\scontent="([^"]*)"/.exec(tag);
+      if (image) references.push(image[1]);
+    }
+    for (const reference of references) {
+      const sitePath = toSitePath(reference, baseHref);
+      if (sitePath && !servedFile(siteDir, sitePath)) missing.add(sitePath);
     }
     missing.forEach((path) => errors.push(`${file}: broken reference ${path}`));
   }
