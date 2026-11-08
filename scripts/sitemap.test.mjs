@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { describe, it } from 'node:test';
+
+import { tempDir } from './temp-dir.mjs';
 
 import { buildSitemap, readPage } from './sitemap.mjs';
 
@@ -44,7 +45,7 @@ describe('readPage', () => {
 
 describe('buildSitemap', () => {
   it('lists each canonical URL once, sorted, with its alternates', () => {
-    const dir = mkdtempSync(join(tmpdir(), 'sitemap-'));
+    const dir = tempDir('sitemap-');
     const files = {
       'index.html': head('/'),
       'pt/index.html': head('/pt/'),

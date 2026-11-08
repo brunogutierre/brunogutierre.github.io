@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
+
+import { tempDir } from './temp-dir.mjs';
 
 import { finalizeSite } from './postbuild.mjs';
 
 function setup() {
-  const base = mkdtempSync(join(tmpdir(), 'postbuild-'));
+  const base = tempDir('postbuild-');
   const site = join(base, 'site');
   const root = join(base, 'site-root');
   mkdirSync(join(site, '404'), { recursive: true });
