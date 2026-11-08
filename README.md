@@ -1,10 +1,98 @@
-# This is my personal page
+# brunogutierre.github.io
 
-It will be built for both my personal practice and my portfolio.
+The personal site of Bruno Gutierre, software engineer: about, projects, CV and blog, in English,
+Portuguese and French.
 
-> **Rewrite in progress.** The site is being rebuilt with Angular 22 and static prerendering in
-> English, Portuguese and French. The home page (About and featured projects) and the projects
-> page are live; experience and blog are placeholders for now.
+**Live:** <https://brunogutierre.github.io> ·
+[Português](https://brunogutierre.github.io/pt/) · [Français](https://brunogutierre.github.io/fr/)
+
+It is also a portfolio project in its own right, built to show:
+
+- **A static site with a modern framework.** Every page is prerendered to plain HTML at build
+  time and hydrated by Angular in the browser: readable without JavaScript, fast to load, and
+  complete for search engines and link previews.
+- **Current Angular.** Standalone components, signals, zoneless change detection, `OnPush`
+  everywhere, lazy routes, resolvers, hydration with event replay.
+- **Three languages done properly.** One build per language, a URL per language that search
+  engines can tell apart (`hreflang`), and posts that exist in only some languages.
+- **Accessibility checked by tools.** axe runs on every page in both themes, in real browsers, on
+  every pull request.
+- **A Markdown blog with nothing to parse in the browser.** Posts are rendered and highlighted at
+  build time.
+
+## Stack
+
+| Area      | Choice                                                                                         |
+| --------- | ---------------------------------------------------------------------------------------------- |
+| Framework | Angular 22, TypeScript 6                                                                       |
+| Rendering | `@angular/ssr` with `outputMode: "static"`: prerendered at build time, hydrated in the browser |
+| Languages | `@angular/localize`, one build per language                                                    |
+| Styles    | SCSS and CSS custom properties with `light-dark()`; no UI library                              |
+| Blog      | Markdown with `markdown-it` and Shiki at build time; frontmatter validated with `zod`          |
+| Tests     | Vitest (jsdom), `node:test`, Playwright with axe-core                                          |
+| Quality   | ESLint (angular-eslint, with the template accessibility rules), Prettier                       |
+| Hosting   | GitHub Pages, deployed by GitHub Actions                                                       |
+| Tooling   | Node 24, for the build and the scripts only: nothing runs on a server                          |
+
+At runtime the site depends only on Angular (with RxJS and `tslib`): no UI kit, no analytics, no
+third-party scripts.
+
+## Architecture
+
+```text
+content/blog/*/*.md
+  │ npm run content
+  ▼
+src/generated/                post HTML and feeds (git-ignored)
+  │ ng build                  with src/app/, src/content/ and src/locale/
+  ▼
+dist/personal-site/browser/   one prerendered build per language: /, pt/, fr/
+  │ postbuild                 adds 404.html, sitemap.xml, the feeds and site-root/
+  │ check:dist                languages, links, assets, feeds, sitemap
+  ▼
+GitHub Pages                  deployed by GitHub Actions
+```
+
+- **Build time:** Angular renders every route of every language to HTML, with its title, meta
+  tags and structured data. The output is plain files that any static host can serve.
+- **In the browser:** Angular hydrates that HTML, reusing the DOM instead of rendering it again,
+  then handles navigation inside a language. The projects, CV and blog pages, and each post's
+  HTML, load lazily.
+
+| Path                 | Holds                                                                             |
+| -------------------- | --------------------------------------------------------------------------------- |
+| `src/app/core/`      | App-wide services: locale, SEO and structured data, theme, blog index             |
+| `src/app/layout/`    | Header, footer, language switcher, theme toggle                                   |
+| `src/app/features/`  | One folder per page: home, projects, experience (the CV), blog, 404               |
+| `src/app/shared/`    | Reusable UI (icons)                                                               |
+| `src/content/`       | Site content as typed files, in every language (see [Content](#content))          |
+| `src/locale/`        | Interface translations (see [Languages](#languages))                              |
+| `src/styles/`        | Design tokens, global styles, post typography, print styles                       |
+| `content/blog/`      | Blog posts in Markdown (see [Blog](#blog))                                        |
+| `scripts/`           | Content pipeline, postbuild, sitemap, dist check, asset links guard, local server |
+| `site-root/`         | Files published once, at the domain root                                          |
+| `e2e/`               | Playwright tests                                                                  |
+| `.github/workflows/` | CI, deployment and the asset links monitor                                        |
+
+Decisions:
+
+- **Static output, no server.** GitHub Pages serves files, and a personal site has nothing to
+  compute per request. Prerendering gives readers, crawlers and link previews the full page, and
+  hydration keeps navigation fast after it. Rejected: client-side rendering only, which sends an
+  empty page to link previews, and to readers until the JavaScript runs; and a Node server, which
+  needs hosting for no gain.
+- **One build per language.** Translations are compiled in, so each language is plain HTML with
+  no translation lookup at runtime, and each URL has one language for search engines. Rejected:
+  a runtime translation library, which ships every language and swaps text after load.
+- **Zoneless, with signals.** No `zone.js` in the bundle; components are `OnPush` and update from
+  signals.
+- **Content in the repository.** Profile, projects, CV and posts are files, reviewed in pull
+  requests and checked by the tests and the build. Rejected: fetching projects from the GitHub
+  API, a runtime dependency whose content no test sees.
+- **The domain is shared.** `brunogutierre.github.io` also serves `/AdvancedSudoku/` from another
+  repository and the Android app links file (see [Android App Links](#android-app-links)). So:
+  no service worker, browser storage keys prefixed `bgsite:v1:`, and a dist check that fails if
+  the build would publish anything under `/AdvancedSudoku/`.
 
 ## Development
 
@@ -24,7 +112,7 @@ npm run lint           # ESLint (angular-eslint, template accessibility rules)
 npm run format:check   # Prettier
 npm run build          # every locale, prerendered, in dist/personal-site/browser
 npm run build:drafts   # the same with the draft posts, to preview them prerendered
-npm run check:dist     # validates the built site (see below)
+npm run check:dist     # validates the built site (see Languages)
 npm run e2e            # end-to-end and accessibility tests of the built site (see Tests)
 npm run i18n:extract   # refreshes src/locale/messages.json from the templates
 npm run og             # renders the link preview images again
@@ -32,7 +120,7 @@ npm run og             # renders the link preview images again
 
 A dev server runs a single language at `/`, so the language switcher links only work in the full
 build: `npm run build`, then `node scripts/serve-dist.mjs dist/personal-site/browser 4310`, which
-serves it the way GitHub Pages does.
+serves it the way GitHub Pages does, at <http://localhost:4310>.
 
 ## Tests
 
@@ -62,11 +150,13 @@ npm run build:drafts && npm run e2e
   warnings) or an uncaught exception.
 - **Browsers:** the full suite runs in Chromium, on a desktop and on a phone. Firefox and WebKit,
   as an iPhone, run the tests tagged `@smoke`. WebKit needs system libraries that
-  `--with-deps` installs on Debian and Ubuntu; elsewhere, run `npm run e2e -- --project chromium
---project mobile --project firefox`.
+  `--with-deps` installs on Debian and Ubuntu; elsewhere, leave it out:
 
-The app is built with `outputMode: "static"`: every route is prerendered to HTML at build time,
-so the output is plain files that any static host can serve, with no Node server.
+  ```bash
+  npm run e2e -- --project chromium --project mobile --project firefox
+  ```
+
+CI runs every layer on each pull request (see [Deployment](#deployment)).
 
 ## Languages
 
@@ -96,48 +186,17 @@ The site is built once per language with `@angular/localize`:
   does not resolve to a served file;
 - a folder would shadow `/AdvancedSudoku/` (published on this domain by another repository).
 
-## Search engines, link previews and feeds
-
-Each page declares its metadata in its route (`data.seo`, or a resolver when it depends on the
-language or the post), and `SeoService` writes it into the prerendered HTML:
-
-| What                  | Where                                                                                                              |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Title, description    | Every page                                                                                                         |
-| Canonical, `hreflang` | Every indexable page; a post links only the languages it exists in                                                 |
-| Open Graph            | Every page; posts are `article`s with their dates and topics                                                       |
-| Link preview image    | `site-root/og/<locale>.jpg` (1200×630), one per language                                                           |
-| Structured data       | JSON-LD: `Person` on the home page, `BlogPosting` on posts                                                         |
-| Atom feed             | `/feed.xml`, `/pt/feed.xml`, `/fr/feed.xml`: full posts, written by `npm run content`, linked from every page head |
-| `sitemap.xml`         | Written by `postbuild.mjs` from the prerendered pages: canonical URLs, their alternates, post dates                |
-| `robots.txt`          | `site-root/`: the whole domain may be crawled, `/AdvancedSudoku/` included                                         |
-
-The link preview images are rendered from [`scripts/og/og-image.html`](scripts/og/og-image.html)
-(name, job title and photo on the hero gradient; the language comes from the URL hash: `#en`,
-`#pt-BR`, `#fr`). After changing it, `npm run og` renders each language to
-`site-root/og/<locale>.jpg` (1200×630, JPEG quality 88) with Playwright's Chromium.
-
-Decisions:
-
-- **The sitemap is built from the output.** It reads the canonical and `hreflang` links the pages
-  already carry, so it cannot disagree with them, and pages marked `noindex` stay out.
-- **Feeds carry the full post.** Posts are CC BY 4.0, so readers can stay in their feed reader.
-  Entry HTML gets an `xml:base`, so its links resolve.
-- **One preview image per language, not per post.** No image renderer in the build; a post shares
-  the image of its language.
-- **No analytics or third-party scripts.**
-
 ## Content
 
 Interface texts (navigation, buttons, headings) go through `@angular/localize`. The site's
 content lives in typed files instead, with every language side by side:
 
-| File                        | Holds                                                                  |
-| --------------------------- | ---------------------------------------------------------------------- |
-| `src/content/profile.ts`    | Role line, city, About paragraphs, highlights and contact links        |
-| `src/content/projects.ts`   | Projects (summary, stack, links, featured or in progress), Android app |
-| `src/content/experience.ts` | The CV: summary, jobs, skills, education and spoken languages          |
-| `public/images/`            | The photo, as WebP at 240 and 480 px                                   |
+| File                        | Holds                                                                      |
+| --------------------------- | -------------------------------------------------------------------------- |
+| `src/content/profile.ts`    | Job title, role line, city, About paragraphs, highlights and contact links |
+| `src/content/projects.ts`   | Projects (summary, stack, links, featured or in progress), Android app     |
+| `src/content/experience.ts` | The CV: summary, jobs, skills, education and spoken languages              |
+| `public/images/`            | The photo, as WebP at 240 and 480 px                                       |
 
 - Texts are `Localized<string>` values (`{ en, 'pt-BR', fr }`): a missing language is a compile
   error. Components pick the current one with the `CURRENT_LOCALE` token.
@@ -213,13 +272,14 @@ Body in Markdown. Headings start at `##`: the title is the page's only `h1`.
 ```
 
 `npm run content` (`scripts/content/build-content.mts`) runs before `start`, `build`, `test` and
-`i18n:extract`. It writes TypeScript into `src/generated/content/` (git-ignored), which the Angular
-build compiles and type-checks:
+`i18n:extract`. It writes these git-ignored files; the Angular build compiles and type-checks the
+TypeScript ones:
 
-| Output                     | Holds                                                      |
-| -------------------------- | ---------------------------------------------------------- |
-| `blog.ts`                  | `POSTS`: the posts of each language, newest first; loaders |
-| `posts/<locale>/<slug>.ts` | The post HTML and its table of contents, imported lazily   |
+| Output                                           | Holds                                                          |
+| ------------------------------------------------ | -------------------------------------------------------------- |
+| `src/generated/content/blog.ts`                  | `POSTS`: the posts of each language, newest first; loaders     |
+| `src/generated/content/posts/<locale>/<slug>.ts` | The post HTML and its table of contents, imported lazily       |
+| `src/generated/site/{,pt/,fr/}feed.xml`          | Each language's Atom feed, copied into the site by `postbuild` |
 
 Decisions:
 
@@ -266,7 +326,38 @@ Decisions:
 - **No JavaScript needed to read.** The copy buttons are added in the browser only, and the
   reading progress bar is a CSS scroll-driven animation (no bar where it is unsupported).
 - **Drafts are checked in CI.** Until the first real post, the production build has no post
-  pages, so CI also prerenders the drafts (`npm run build:drafts`) and runs the dist check.
+  pages, so CI also prerenders the drafts (`npm run build:drafts`) and runs the dist check and the
+  end-to-end tests on them.
+
+## Search engines, link previews and feeds
+
+Each page declares its metadata in its route (`data.seo`, or a resolver when it depends on the
+language or the post), and `SeoService` writes it into the prerendered HTML:
+
+| What                  | Where                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Title, description    | Every page                                                                                                         |
+| Canonical, `hreflang` | Every indexable page; a post links only the languages it exists in                                                 |
+| Open Graph            | Every page; posts are `article`s with their dates and topics                                                       |
+| Link preview image    | `site-root/og/<locale>.jpg` (1200×630), one per language                                                           |
+| Structured data       | JSON-LD: `Person` on the home page, `BlogPosting` on posts                                                         |
+| Atom feed             | `/feed.xml`, `/pt/feed.xml`, `/fr/feed.xml`: full posts, written by `npm run content`, linked from every page head |
+| `sitemap.xml`         | Written by `postbuild.mjs` from the prerendered pages: canonical URLs, their alternates, post dates                |
+| `robots.txt`          | `site-root/`: the whole domain may be crawled, `/AdvancedSudoku/` included                                         |
+
+The link preview images are rendered from [`scripts/og/og-image.html`](scripts/og/og-image.html)
+(name, job title and photo on the hero gradient; the language comes from the URL hash: `#en`,
+`#pt-BR`, `#fr`). After changing it, `npm run og` renders each language to
+`site-root/og/<locale>.jpg` (1200×630, JPEG quality 88) with Playwright's Chromium.
+
+Decisions:
+
+- **The sitemap is built from the output.** It reads the canonical and `hreflang` links the pages
+  already carry, so it cannot disagree with them, and pages marked `noindex` stay out.
+- **Feeds carry the full post.** Posts are CC BY 4.0, so readers can stay in their feed reader.
+  Entry HTML gets an `xml:base`, so its links resolve.
+- **One preview image per language, not per post.** No image renderer in the build; a post shares
+  the image of its language.
 
 ## Deployment
 
@@ -275,7 +366,11 @@ GitHub Pages publishes the site from GitHub Actions, not from a branch folder:
 - [`deploy.yml`](.github/workflows/deploy.yml) runs on every push to `main` and on demand: it
   builds every language, checks the output (`check:dist` and the asset links file, below),
   uploads it as the Pages artifact, deploys it, and then verifies the live site.
-- [`ci.yml`](.github/workflows/ci.yml) runs the same build and checks on every pull request.
+- [`ci.yml`](.github/workflows/ci.yml) runs on every pull request and push to `main`: lint,
+  formatting, the unit, content and script tests, the build with the draft posts with its dist
+  check and end-to-end tests, then the production build with the same checks as a deployment.
+- `main` is protected: every change goes through a pull request, and the "Asset links" and
+  "Lint, test and build" jobs of `ci.yml` must pass.
 - `npm run build` ends with [`postbuild.mjs`](scripts/postbuild.mjs) (the npm `postbuild` hook):
   - it copies [`site-root/`](site-root) into the site root. Files that must exist once, at the
     domain root, live there instead of `public/`, which the i18n build copies into every language
