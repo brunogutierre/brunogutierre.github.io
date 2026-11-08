@@ -1,13 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { PROFILE } from '../../../content/profile';
+import { PostSummary } from '../../core/blog/post';
+import { postSummary, provideBlogContent } from '../../core/blog/testing';
 import { CURRENT_LOCALE } from '../../core/i18n/locale';
 import { HomePage } from './home-page';
 
 describe('HomePage', () => {
-  function render() {
+  function render(posts: PostSummary[] = []) {
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: CURRENT_LOCALE, useValue: 'pt-BR' }],
+      providers: [
+        provideRouter([]),
+        { provide: CURRENT_LOCALE, useValue: 'pt-BR' },
+        provideBlogContent({ 'pt-BR': posts }),
+      ],
     });
     const fixture = TestBed.createComponent(HomePage);
     fixture.detectChanges();
@@ -43,6 +49,22 @@ describe('HomePage', () => {
       'AngularMapper',
     ]);
     expect(featured.querySelector('app-android-app-card')).not.toBeNull();
-    expect(featured.querySelector('.all-projects')?.getAttribute('href')).toBe('/projects');
+    expect(featured.querySelector('.all-link')?.getAttribute('href')).toBe('/projects');
+  });
+
+  it('shows the three newest posts of the language, and a link to all posts', () => {
+    const posts = ['d', 'c', 'b', 'a'].map((slug) =>
+      postSummary(slug, { title: slug.toUpperCase() }),
+    );
+    const latest = render(posts).querySelector('section.latest')!;
+
+    expect(Array.from(latest.querySelectorAll('h3'), (h) => text(h))).toEqual(['D', 'C', 'B']);
+    expect(latest.querySelector('h3 a')?.getAttribute('href')).toBe('/blog/d');
+    expect(latest.querySelector('app-post-meta')).not.toBeNull();
+    expect(latest.querySelector('.all-link')?.getAttribute('href')).toBe('/blog');
+  });
+
+  it('leaves the latest posts out until there is a post in the language', () => {
+    expect(render().querySelector('section.latest')).toBeNull();
   });
 });

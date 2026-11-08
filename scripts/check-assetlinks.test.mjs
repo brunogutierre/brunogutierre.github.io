@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
+
+import { tempDir } from './temp-dir.mjs';
 
 import {
   ASSETLINKS_PATH,
@@ -71,7 +72,7 @@ describe('validateAssetLinks', () => {
 
 describe('checkSite', () => {
   const site = (content) => {
-    const dir = mkdtempSync(join(tmpdir(), 'assetlinks-'));
+    const dir = tempDir('assetlinks-');
     if (content !== undefined) {
       mkdirSync(join(dir, '.well-known'));
       writeFileSync(join(dir, ASSETLINKS_PATH), content);

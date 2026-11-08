@@ -54,6 +54,15 @@
   }
 
   <app-post-body [html]="post().content.html" [url]="url()" />
+
+  <!-- <small>: licensing is what it is for; same font size as the post text, so the rule
+       above it spans the text width -->
+  <p class="license">
+    <small i18n="@@post.license"
+      >This post is licensed under <a [href]="license" rel="license">CC BY 4.0</a>: share and adapt
+      it, with credit.</small
+    >
+  </p>
 </article>
 
 @if (neighbors().older || neighbors().newer) {

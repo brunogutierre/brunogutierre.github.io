@@ -64,8 +64,35 @@
       }
     </ul>
     <app-android-app-card />
-    <a class="btn btn--ghost all-projects" routerLink="/projects">
+    <a class="btn btn--ghost all-link" routerLink="/projects">
       <span i18n="@@home.allProjects">All projects</span><app-icon name="arrow-right" />
     </a>
   </section>
+
+  @if (latestPosts.length) {
+    <section class="latest" aria-labelledby="latest-title">
+      <div class="section-header">
+        <p class="eyebrow">
+          <app-icon name="chevron" /><span i18n="@@blog.eyebrow">03 / blog</span>
+        </p>
+        <h2 id="latest-title" i18n="@@home.latestTitle">Latest posts</h2>
+      </div>
+      <ul class="post-cards">
+        @for (post of latestPosts; track post.slug) {
+          <li>
+            <article [attr.aria-labelledby]="'latest-' + post.slug">
+              <h3 [id]="'latest-' + post.slug">
+                <a [routerLink]="['/blog', post.slug]">{{ post.title }}</a>
+              </h3>
+              <app-post-meta [post]="post" />
+              <p>{{ post.description }}</p>
+            </article>
+          </li>
+        }
+      </ul>
+      <a class="btn btn--ghost all-link" routerLink="/blog">
+        <span i18n="@@post.back">All posts</span><app-icon name="arrow-right" />
+      </a>
+    </section>
+  }
 </div>

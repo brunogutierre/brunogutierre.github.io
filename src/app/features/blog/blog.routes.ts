@@ -1,7 +1,9 @@
 import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router, Routes } from '@angular/router';
 import { BlogService, Post } from '../../core/blog/blog.service';
+import { CURRENT_LOCALE } from '../../core/i18n/locale';
 import { PageSeo, pageTitle } from '../../core/seo/seo.service';
+import { blogPostingJsonLd } from '../../core/seo/structured-data';
 import { BlogPage } from './blog-page';
 
 /** Shows the 404 page, keeping the requested URL in the address bar: a slug with no post. */
@@ -17,11 +19,17 @@ export const resolvePost: ResolveFn<Post> = async (route, state) => {
   return (await blog.load(route.paramMap.get('slug') ?? '')) ?? missing;
 };
 
-/** Page metadata of a post: its own title and description, and only its languages. */
+/** Page metadata of a post: its title and description, its languages, dates and topics. */
 export const resolvePostSeo: ResolveFn<PageSeo> = (route, state) => {
   const post = inject(BlogService).find(route.paramMap.get('slug') ?? '');
   if (!post) return notFound(state.url);
-  return { title: pageTitle(post.title), description: post.description, locales: post.locales };
+  return {
+    title: pageTitle(post.title),
+    description: post.description,
+    locales: post.locales,
+    article: { published: post.date, modified: post.updated, tags: post.tags },
+    jsonLd: blogPostingJsonLd(post, inject(CURRENT_LOCALE)),
+  };
 };
 
 export default [

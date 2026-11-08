@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { describe, it } from 'node:test';
+
+import { tempDir } from './temp-dir.mjs';
 
 import { checkDist, expectedLang, servedFile, toSitePath } from './check-dist.mjs';
 
@@ -17,6 +18,8 @@ function site(overrides = {}) {
     'index.html': page('en', '/', '<a href="/pt/">PT</a><a href="/404/">x</a>'),
     '404/index.html': page('en', '/'),
     '404.html': page('en', '/'),
+    'sitemap.xml': '<urlset/>',
+    'robots.txt': '',
     'pt/styles.css': '',
     'pt/index.html': page('pt-BR', '/pt/', '<a href="https://brunogutierre.github.io/fr/">FR</a>'),
     'pt/404/index.html': page('pt-BR', '/pt/'),
@@ -25,7 +28,7 @@ function site(overrides = {}) {
     'fr/404/index.html': page('fr', '/fr/'),
     ...overrides,
   };
-  const dir = mkdtempSync(join(tmpdir(), 'dist-'));
+  const dir = tempDir('dist-');
   for (const [path, content] of Object.entries(files)) {
     if (content === null) continue;
     mkdirSync(dirname(join(dir, path)), { recursive: true });
@@ -71,6 +74,10 @@ describe('checkDist', () => {
 
   it('reports a missing root 404.html', () => {
     assert.match(checkDist(site({ '404.html': null })).join(), /missing 404.html/);
+    assert.deepEqual(checkDist(site({ 'sitemap.xml': null, 'robots.txt': null })), [
+      'missing sitemap.xml at the site root',
+      'missing robots.txt at the site root',
+    ]);
   });
 
   it('reports a wrong or missing lang', () => {
@@ -98,6 +105,32 @@ describe('checkDist', () => {
       'index.html: broken reference /chunk-1.js',
       'index.html: broken reference /pt',
     ]);
+  });
+
+  it('reports a link preview image that is not there', () => {
+    const og = (path) =>
+      page(
+        'en',
+        '/',
+        `<meta property="og:image" content="https://brunogutierre.github.io${path}">`,
+      );
+    const dir = site({
+      'og/en.jpg': '',
+      'index.html': og('/og/en.jpg'),
+      '404/index.html': og('/og/fr.jpg'),
+    });
+
+    assert.deepEqual(checkDist(dir), ['404/index.html: broken reference /og/fr.jpg']);
+  });
+
+  it('follows the links of each language feed', () => {
+    const feed = (href) => `<feed><link rel="alternate" href="${href}"/></feed>`;
+    const dir = site({
+      'pt/feed.xml': feed('https://brunogutierre.github.io/pt/'),
+      'fr/feed.xml': feed('https://brunogutierre.github.io/fr/blog/missing/'),
+    });
+
+    assert.deepEqual(checkDist(dir), ['fr/feed.xml: broken link /fr/blog/missing/']);
   });
 
   it('reports a folder that would shadow /AdvancedSudoku/', () => {

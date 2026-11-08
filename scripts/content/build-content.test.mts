@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, it } from 'node:test';
-import { ContentError, indexPosts, readPosts, writeContent } from './build-content.mts';
+import { ContentError, indexPosts, readPosts, writeContent, writeFeeds } from './build-content.mts';
 
 let dir: string;
 beforeEach(async () => {
@@ -100,5 +100,20 @@ describe('writeContent', () => {
     );
     assert.match(body, /export default content;/);
     await assert.rejects(readFile(join(dir, 'out/posts/en/stale.ts')));
+  });
+});
+
+describe('writeFeeds', () => {
+  it('writes one feed per language at its path in the site, replacing old output', async () => {
+    await write('blog/hello/fr.md', post('Bonjour', '2026-01-10'));
+    await write('site/old.xml', 'stale');
+    const posts = await readPosts(join(dir, 'blog'), { drafts: false });
+
+    await writeFeeds(posts, join(dir, 'site'));
+
+    assert.match(await readFile(join(dir, 'site/fr/feed.xml'), 'utf8'), /<title>Bonjour<\/title>/);
+    assert.doesNotMatch(await readFile(join(dir, 'site/feed.xml'), 'utf8'), /<entry>/);
+    assert.match(await readFile(join(dir, 'site/pt/feed.xml'), 'utf8'), /xml:lang="pt-BR"/);
+    await assert.rejects(readFile(join(dir, 'site/old.xml')));
   });
 });

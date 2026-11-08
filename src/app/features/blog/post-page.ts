@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { BlogService, Post } from '../../core/blog/blog.service';
 import { TocEntry } from '../../core/blog/post';
 import { CURRENT_LOCALE, LOCALE_INFO, localizedPath } from '../../core/i18n/locale';
+import { POST_LICENSE } from '../../core/seo/structured-data';
 import { Icon } from '../../shared/icon/icon';
 import { PostBody } from './post-body';
 import { PostMeta } from './post-meta';
@@ -18,6 +19,8 @@ import { PostMeta } from './post-meta';
 export class PostPage {
   /** Resolved by the route (`resolvePost`). */
   readonly post = input.required<Post>();
+
+  protected readonly license = POST_LICENSE;
 
   private readonly locale = inject(CURRENT_LOCALE);
   private readonly blog = inject(BlogService);

@@ -53,10 +53,46 @@ The site is built once per language with `@angular/localize`:
 - URLs always end with `/` (`TrailingSlashPathLocationStrategy`), the form GitHub Pages serves
   folders at without a redirect.
 
-`scripts/check-dist.mjs` runs in CI after the build and fails when a locale lacks its home or 404
-page, an HTML file declares the wrong `lang`, a page is a meta-refresh redirect stub, any internal
-link, hreflang URL or asset does not resolve to a served file, or a folder would shadow
-`/AdvancedSudoku/` (published on this domain by another repository).
+`scripts/check-dist.mjs` runs in CI after the build and fails when:
+
+- a locale lacks its home or 404 page, or the site root lacks `404.html`, `sitemap.xml` or
+  `robots.txt`;
+- an HTML file declares the wrong `lang`, or a page is a meta-refresh redirect stub;
+- any internal link, hreflang URL, asset or link preview image, or any link of a language's feed,
+  does not resolve to a served file;
+- a folder would shadow `/AdvancedSudoku/` (published on this domain by another repository).
+
+## Search engines, link previews and feeds
+
+Each page declares its metadata in its route (`data.seo`, or a resolver when it depends on the
+language or the post), and `SeoService` writes it into the prerendered HTML:
+
+| What                  | Where                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Title, description    | Every page                                                                                                         |
+| Canonical, `hreflang` | Every indexable page; a post links only the languages it exists in                                                 |
+| Open Graph            | Every page; posts are `article`s with their dates and topics                                                       |
+| Link preview image    | `site-root/og/<locale>.jpg` (1200×630), one per language                                                           |
+| Structured data       | JSON-LD: `Person` on the home page, `BlogPosting` on posts                                                         |
+| Atom feed             | `/feed.xml`, `/pt/feed.xml`, `/fr/feed.xml`: full posts, written by `npm run content`, linked from every page head |
+| `sitemap.xml`         | Written by `postbuild.mjs` from the prerendered pages: canonical URLs, their alternates, post dates                |
+| `robots.txt`          | `site-root/`: the whole domain may be crawled, `/AdvancedSudoku/` included                                         |
+
+The link preview images are rendered from [`scripts/og/og-image.html`](scripts/og/og-image.html)
+(name, job title and photo on the hero gradient; the language comes from the URL hash: `#en`,
+`#pt-BR`, `#fr`). After changing it, open each language in a 1200×630 browser window once fonts
+and photo have loaded and save a JPEG (quality about 88) to `site-root/og/<locale>.jpg`, for
+example with Playwright's `page.screenshot({ type: 'jpeg', quality: 88 })`.
+
+Decisions:
+
+- **The sitemap is built from the output.** It reads the canonical and `hreflang` links the pages
+  already carry, so it cannot disagree with them, and pages marked `noindex` stay out.
+- **Feeds carry the full post.** Posts are CC BY 4.0, so readers can stay in their feed reader.
+  Entry HTML gets an `xml:base`, so its links resolve.
+- **One preview image per language, not per post.** No image renderer in the build; a post shares
+  the image of its language.
+- **No analytics or third-party scripts.**
 
 ## Content
 
@@ -211,9 +247,12 @@ GitHub Pages publishes the site from GitHub Actions, not from a branch folder:
   - it copies [`site-root/`](site-root) into the site root. Files that must exist once, at the
     domain root, live there instead of `public/`, which the i18n build copies into every language
     folder;
+  - it copies `src/generated/site/` (each language's feed, written by `npm run content`) the
+    same way;
   - it publishes the prerendered English 404 page as `/404.html`, the single file GitHub Pages
     serves for any missing path. On a missing page the language switcher links to each
-    language's home, since the missing URL has no translation.
+    language's home, since the missing URL has no translation;
+  - it writes `/sitemap.xml` from the prerendered pages ([`sitemap.mjs`](scripts/sitemap.mjs)).
 
 ## Android App Links
 
@@ -248,3 +287,12 @@ node --test 'scripts/**/*.test.mjs'
 npm run build && node scripts/check-assetlinks.mjs dist/personal-site/browser --source site-root/.well-known/assetlinks.json
 scripts/verify-live-assetlinks.sh https://brunogutierre.github.io/.well-known/assetlinks.json site-root/.well-known/assetlinks.json
 ```
+
+## License
+
+- Code: [MIT](LICENSE).
+- Blog posts (`content/blog/`):
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Share and adapt them, with credit.
+- Fonts: SIL Open Font License, with their license files in `public/fonts/`.
+- The photo of Bruno Gutierre and the link preview images (`public/images/`, `site-root/og/`):
+  all rights reserved.

@@ -2,8 +2,9 @@
 // Checks the prerendered site before it is published:
 // - every locale has its home and 404 pages, and every HTML file declares the right lang;
 // - no file is a meta-refresh redirect stub (a known regression of i18n + prerendering);
-// - every internal reference (links, canonical/hreflang URLs, scripts, styles, images) resolves
-//   to a file GitHub Pages will serve, so a missing translation or chunk cannot ship;
+// - every internal reference (links, canonical/hreflang URLs, scripts, styles, images, the link
+//   preview image) resolves to a file GitHub Pages will serve, so a missing translation or chunk
+//   cannot ship; so does every link of each language's Atom feed;
 // - nothing shadows /AdvancedSudoku/, which another repository publishes on this domain.
 //
 // Usage: node scripts/check-dist.mjs <site-dir>
@@ -22,6 +23,7 @@ export const FOREIGN_PATHS = ['/AdvancedSudoku/'];
 
 const REFERENCE_TAG = /<(?:a|link|script|img|source)\b[^>]*>/gi;
 const REFERENCE_ATTR = /\s(?:href|src)="([^"]*)"/gi;
+const META_TAG = /<meta\b[^>]*>/gi;
 
 /** Lang expected for an HTML file, from its path relative to the site root. */
 export function expectedLang(relativePath) {
@@ -82,14 +84,28 @@ export function checkDist(siteDir) {
         errors.push(`missing ${posix.join(dir, page)} (${lang})`);
     }
   }
-  // GitHub Pages serves this single file for every missing path (see postbuild.mjs).
-  if (!isFile(join(siteDir, '404.html'))) errors.push('missing 404.html at the site root');
+  // GitHub Pages serves 404.html for every missing path; postbuild.mjs writes it and the sitemap.
+  for (const file of ['404.html', 'sitemap.xml', 'robots.txt']) {
+    if (!isFile(join(siteDir, file))) errors.push(`missing ${file} at the site root`);
+  }
   const shadowing = readdirSync(siteDir).filter((name) =>
     FOREIGN_PATHS.some((foreign) => foreign.slice(1, -1).toLowerCase() === name.toLowerCase()),
   );
   shadowing.forEach((name) =>
     errors.push(`${name}/ would shadow a path another repository publishes`),
   );
+
+  for (const dir of Object.keys(LOCALE_DIRS)) {
+    const feed = posix.join(dir, 'feed.xml');
+    if (!isFile(join(siteDir, feed))) continue; // pages link the feed: they report it missing
+    const xml = readFileSync(join(siteDir, feed), 'utf8');
+    for (const [, reference] of xml.matchAll(/<link\b[^>]*\shref="([^"]*)"/g)) {
+      const sitePath = toSitePath(reference, dir ? `/${dir}/` : '/');
+      if (sitePath && !servedFile(siteDir, sitePath)) {
+        errors.push(`${feed}: broken link ${sitePath}`);
+      }
+    }
+  }
 
   for (const file of htmlFiles(siteDir)) {
     const html = readFileSync(join(siteDir, file), 'utf8');
@@ -102,11 +118,17 @@ export function checkDist(siteDir) {
     }
     const baseHref = /<base\b[^>]*\shref="([^"]*)"/i.exec(html)?.[1] ?? `/${posix.dirname(file)}/`;
     const missing = new Set();
+    const references = [];
     for (const [tag] of html.matchAll(REFERENCE_TAG)) {
-      for (const [, reference] of tag.matchAll(REFERENCE_ATTR)) {
-        const sitePath = toSitePath(reference, baseHref);
-        if (sitePath && !servedFile(siteDir, sitePath)) missing.add(sitePath);
-      }
+      for (const [, reference] of tag.matchAll(REFERENCE_ATTR)) references.push(reference);
+    }
+    for (const [tag] of html.matchAll(META_TAG)) {
+      const image = /\sproperty="og:image"/.test(tag) && /\scontent="([^"]*)"/.exec(tag);
+      if (image) references.push(image[1]);
+    }
+    for (const reference of references) {
+      const sitePath = toSitePath(reference, baseHref);
+      if (sitePath && !servedFile(siteDir, sitePath)) missing.add(sitePath);
     }
     missing.forEach((path) => errors.push(`${file}: broken reference ${path}`));
   }

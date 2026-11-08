@@ -2,14 +2,16 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PROFILE } from '../../../content/profile';
 import { PROJECTS } from '../../../content/projects';
+import { BlogService } from '../../core/blog/blog.service';
 import { CURRENT_LOCALE } from '../../core/i18n/locale';
 import { Icon } from '../../shared/icon/icon';
+import { PostMeta } from '../blog/post-meta';
 import { AndroidAppCard } from '../projects/android-app-card';
 import { ProjectCard } from '../projects/project-card';
 
 @Component({
   selector: 'app-home-page',
-  imports: [RouterLink, Icon, ProjectCard, AndroidAppCard],
+  imports: [RouterLink, Icon, PostMeta, ProjectCard, AndroidAppCard],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
@@ -18,4 +20,6 @@ export class HomePage {
   protected readonly profile = PROFILE;
   protected readonly locale = inject(CURRENT_LOCALE);
   protected readonly featured = PROJECTS.filter((project) => project.featured);
+  /** The newest posts of the language; the section is left out until there is one. */
+  protected readonly latestPosts = inject(BlogService).posts.slice(0, 3);
 }

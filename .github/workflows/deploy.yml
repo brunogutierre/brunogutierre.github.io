@@ -32,7 +32,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      # Prerenders every language, then (postbuild) adds the root-only files and /404.html.
+      # Prerenders every language, then (postbuild) adds the root files, feeds, /404.html and the
+      # sitemap.
       - run: npm run build
       - name: Check the prerendered site
         run: npm run check:dist

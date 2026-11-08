@@ -43,10 +43,12 @@ describe('blog routes', () => {
 
     expect(root.querySelector('h1')?.textContent).toBe('Hello');
     expect(root.querySelector('app-post-body .prose')?.innerHTML).toBe('<p>Hi!</p>');
-    expect(leaf().data['seo']).toEqual({
+    expect(leaf().data['seo']).toMatchObject({
       title: 'Hello · Bruno Gutierre',
       description: 'About hello.',
       locales: ['en', 'fr'],
+      article: { published: '2026-01-15', tags: [] },
+      jsonLd: { '@type': 'BlogPosting', headline: 'Hello' },
     });
   });
 

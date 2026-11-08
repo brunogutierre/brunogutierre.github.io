@@ -1,0 +1,6 @@
+# Everything on this domain may be crawled, /AdvancedSudoku/ (published by another repository)
+# included. Pages kept out of search results say so with <meta name="robots" content="noindex">.
+User-agent: *
+Allow: /
+
+Sitemap: https://brunogutierre.github.io/sitemap.xml
