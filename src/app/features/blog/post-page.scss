@@ -35,12 +35,12 @@
 // One column; from $bp-lg the table of contents moves beside the text and stays in view.
 .post {
   display: grid;
-  grid-template-areas: 'header' 'toc' 'body';
+  grid-template-areas: 'header' 'toc' 'body' 'license';
   grid-template-columns: minmax(0, 1fr);
   gap: var(--sp-7);
 
   @media (min-width: $bp-lg) {
-    grid-template-areas: 'header header' 'body toc';
+    grid-template-areas: 'header header' 'body toc' 'license .';
     grid-template-columns: minmax(0, 1fr) 15rem;
     column-gap: var(--sp-8);
   }
@@ -60,6 +60,20 @@
 
 app-post-body {
   grid-area: body;
+}
+
+.license {
+  grid-area: license;
+  max-inline-size: var(--reading-max);
+  margin: 0;
+  padding-block-start: var(--sp-5);
+  border-block-start: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--fs-lg); // as .prose: the same 68ch
+
+  small {
+    font-size: var(--fs-sm);
+  }
 }
 
 .back,

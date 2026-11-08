@@ -42,6 +42,9 @@ describe('PostPage', () => {
     expect(root.querySelector('app-post-body .prose')?.textContent).toBe('Corpo');
     expect(root.querySelector('.back')?.getAttribute('href')).toBe('/blog/');
     expect(root.querySelector('.translations')).toBeNull();
+    expect(root.querySelector('.license a[rel="license"]')?.getAttribute('href')).toBe(
+      'https://creativecommons.org/licenses/by/4.0/',
+    );
   });
 
   it('links the other languages the post is written in', () => {

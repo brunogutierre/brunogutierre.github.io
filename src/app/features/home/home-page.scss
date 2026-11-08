@@ -169,7 +169,8 @@ h1 {
   }
 }
 
-.featured {
+.featured,
+.latest {
   display: grid;
   gap: var(--sp-5);
 
@@ -178,7 +179,51 @@ h1 {
   }
 }
 
-.all-projects {
+.all-link {
   justify-self: start;
   --icon-size: 18px;
+}
+
+// Latest posts: text cards, title first, in a row from $bp-md
+.post-cards {
+  display: grid;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  article {
+    display: grid;
+    align-content: start;
+    gap: var(--sp-3);
+    block-size: 100%;
+    padding: var(--sp-5);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-1);
+  }
+
+  h3 {
+    font-size: var(--fs-xl);
+
+    a {
+      color: var(--text);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--primary);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-muted);
+  }
 }
