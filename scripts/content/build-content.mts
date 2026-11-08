@@ -1,10 +1,13 @@
 // Turns content/blog/<slug>/<locale>.md into TypeScript the Angular build compiles:
 //   src/generated/content/blog.ts                  index of posts per language + lazy loaders
 //   src/generated/content/posts/<locale>/<slug>.ts one module per post (HTML, table of contents)
+// and into files the postbuild step copies into the built site:
+//   src/generated/site/[<language folder>/]feed.xml Atom feed of each language
 // Usage: node scripts/content/build-content.mts [--drafts]
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { parseArgs } from 'node:util';
+import { feed, feedPath } from './feed.mts';
 import { type Frontmatter, parsePost, SLUG } from './frontmatter.mts';
 import { createRenderer, readingMinutes, type TocEntry } from './markdown.mts';
 
@@ -157,12 +160,29 @@ export async function writeContent(posts: readonly Post[], outDir: string): Prom
   }
 }
 
+/** Replaces `outDir` with one Atom feed per language, at its path in the site. */
+export async function writeFeeds(posts: readonly Post[], outDir: string): Promise<void> {
+  await rm(outDir, { recursive: true, force: true });
+  for (const locale of LOCALES) {
+    const file = join(outDir, feedPath(locale));
+    await mkdir(dirname(file), { recursive: true });
+    await writeFile(
+      file,
+      feed(
+        locale,
+        posts.filter((post) => post.locale === locale),
+      ),
+    );
+  }
+}
+
 if (import.meta.main) {
   const { values } = parseArgs({ options: { drafts: { type: 'boolean', default: false } } });
   const root = join(import.meta.dirname, '..', '..');
   try {
     const posts = await readPosts(join(root, 'content', 'blog'), { drafts: values.drafts });
     await writeContent(posts, join(root, 'src', 'generated', 'content'));
+    await writeFeeds(posts, join(root, 'src', 'generated', 'site'));
     const drafts = values.drafts ? ', drafts included' : '';
     console.log(`Blog content: ${posts.length} post file(s)${drafts} → src/generated/content`);
   } catch (error) {

@@ -4,7 +4,7 @@
 // - no file is a meta-refresh redirect stub (a known regression of i18n + prerendering);
 // - every internal reference (links, canonical/hreflang URLs, scripts, styles, images, the link
 //   preview image) resolves to a file GitHub Pages will serve, so a missing translation or chunk
-//   cannot ship;
+//   cannot ship; so does every link of each language's Atom feed;
 // - nothing shadows /AdvancedSudoku/, which another repository publishes on this domain.
 //
 // Usage: node scripts/check-dist.mjs <site-dir>
@@ -92,6 +92,18 @@ export function checkDist(siteDir) {
   shadowing.forEach((name) =>
     errors.push(`${name}/ would shadow a path another repository publishes`),
   );
+
+  for (const dir of Object.keys(LOCALE_DIRS)) {
+    const feed = posix.join(dir, 'feed.xml');
+    if (!isFile(join(siteDir, feed))) continue; // pages link the feed: they report it missing
+    const xml = readFileSync(join(siteDir, feed), 'utf8');
+    for (const [, reference] of xml.matchAll(/<link\b[^>]*\shref="([^"]*)"/g)) {
+      const sitePath = toSitePath(reference, dir ? `/${dir}/` : '/');
+      if (sitePath && !servedFile(siteDir, sitePath)) {
+        errors.push(`${feed}: broken link ${sitePath}`);
+      }
+    }
+  }
 
   for (const file of htmlFiles(siteDir)) {
     const html = readFileSync(join(siteDir, file), 'utf8');

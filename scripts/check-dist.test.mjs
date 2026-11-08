@@ -116,6 +116,16 @@ describe('checkDist', () => {
     assert.deepEqual(checkDist(dir), ['404/index.html: broken reference /og/fr.jpg']);
   });
 
+  it('follows the links of each language feed', () => {
+    const feed = (href) => `<feed><link rel="alternate" href="${href}"/></feed>`;
+    const dir = site({
+      'pt/feed.xml': feed('https://brunogutierre.github.io/pt/'),
+      'fr/feed.xml': feed('https://brunogutierre.github.io/fr/blog/missing/'),
+    });
+
+    assert.deepEqual(checkDist(dir), ['fr/feed.xml: broken link /fr/blog/missing/']);
+  });
+
   it('reports a folder that would shadow /AdvancedSudoku/', () => {
     const errors = checkDist(site({ 'advancedsudoku/index.html': page('en', '/') }));
     assert.match(errors.join(), /advancedsudoku\/ would shadow/);
