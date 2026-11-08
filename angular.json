@@ -140,7 +140,9 @@
               "src/**/*.ts",
               "src/**/*.html",
               "scripts/**/*.mjs",
-              "scripts/**/*.mts"
+              "scripts/**/*.mts",
+              "e2e/**/*.ts",
+              "playwright.config.ts"
             ]
           }
         },

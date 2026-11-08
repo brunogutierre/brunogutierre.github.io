@@ -25,11 +25,45 @@ npm run format:check   # Prettier
 npm run build          # every locale, prerendered, in dist/personal-site/browser
 npm run build:drafts   # the same with the draft posts, to preview them prerendered
 npm run check:dist     # validates the built site (see below)
+npm run e2e            # end-to-end and accessibility tests of the built site (see Tests)
 npm run i18n:extract   # refreshes src/locale/messages.json from the templates
+npm run og             # renders the link preview images again
 ```
 
 A dev server runs a single language at `/`, so the language switcher links only work in the full
-build (`npm run build`, then serve `dist/personal-site/browser`).
+build: `npm run build`, then `node scripts/serve-dist.mjs dist/personal-site/browser 4310`, which
+serves it the way GitHub Pages does.
+
+## Tests
+
+| Layer            | Command                                     | What it covers                                                                          |
+| ---------------- | ------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Unit             | `npm test` (`test:ci` with coverage, ≥ 80%) | Components, services and content files, with Vitest in jsdom                            |
+| Content pipeline | `npm run test:content`                      | Frontmatter, Markdown rendering, code contrast, generator and feeds (`node:test`)       |
+| Build scripts    | `npm run test:scripts`                      | Dist check, postbuild, sitemap and the asset links guard (`node:test`, no dependencies) |
+| Built site       | `npm run check:dist`                        | Languages, links, assets, feeds, sitemap and robots.txt of the output (see Languages)   |
+| End-to-end, a11y | `npm run e2e`                               | The prerendered site in real browsers, served like GitHub Pages                         |
+
+The end-to-end tests ([`e2e/`](e2e), Playwright) run on the site built with the draft posts, so
+the post pages are covered; they read the sample posts in `content/blog/`:
+
+```bash
+npx playwright install --with-deps chromium firefox webkit   # once per Playwright version
+npm run build:drafts && npm run e2e
+```
+
+- **Accessibility:** axe, with the WCAG 2.2 AA rules, on every page of the built sitemap and on
+  the 404 page, in the light and dark themes. Pages must also fit the window (no horizontal
+  overflow).
+- **Flows:** navigation, language switcher, theme kept after a reload, skip link, the 404 status,
+  the blog (contents links, back button, copy buttons, a post in one language) and the CV in
+  print.
+- **Every test** fails on a console error or warning (Angular reports hydration mismatches as
+  warnings) or an uncaught exception.
+- **Browsers:** the full suite runs in Chromium, on a desktop and on a phone. Firefox and WebKit,
+  as an iPhone, run the tests tagged `@smoke`. WebKit needs system libraries that
+  `--with-deps` installs on Debian and Ubuntu; elsewhere, run `npm run e2e -- --project chromium
+--project mobile --project firefox`.
 
 The app is built with `outputMode: "static"`: every route is prerendered to HTML at build time,
 so the output is plain files that any static host can serve, with no Node server.
@@ -80,9 +114,8 @@ language or the post), and `SeoService` writes it into the prerendered HTML:
 
 The link preview images are rendered from [`scripts/og/og-image.html`](scripts/og/og-image.html)
 (name, job title and photo on the hero gradient; the language comes from the URL hash: `#en`,
-`#pt-BR`, `#fr`). After changing it, open each language in a 1200×630 browser window once fonts
-and photo have loaded and save a JPEG (quality about 88) to `site-root/og/<locale>.jpg`, for
-example with Playwright's `page.screenshot({ type: 'jpeg', quality: 88 })`.
+`#pt-BR`, `#fr`). After changing it, `npm run og` renders each language to
+`site-root/og/<locale>.jpg` (1200×630, JPEG quality 88) with Playwright's Chromium.
 
 Decisions:
 

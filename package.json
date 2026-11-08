@@ -18,6 +18,7 @@
     "watch": "ng build --watch --configuration development",
     "prei18n:extract": "npm run content",
     "i18n:extract": "ng extract-i18n",
+    "og": "node scripts/og/render-og.mts",
     "pretest": "npm run content:drafts",
     "test": "ng test --watch=false",
     "pretest:watch": "npm run content:drafts",
@@ -25,6 +26,7 @@
     "test:ci": "npm test -- --coverage",
     "test:scripts": "node --test 'scripts/**/*.test.mjs'",
     "test:content": "tsc -p tsconfig.scripts.json && node --test 'scripts/content/*.test.mts'",
+    "e2e": "tsc -p tsconfig.e2e.json && playwright test",
     "lint": "ng lint",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -48,7 +50,9 @@
     "@angular/cli": "^22.2.6",
     "@angular/compiler-cli": "^22.2.0",
     "@angular/localize": "^22.2.5",
+    "@axe-core/playwright": "4.14.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.64.1",
     "@shikijs/markdown-it": "^4.5.0",
     "@types/node": "^24.19.2",
     "@vitest/coverage-v8": "^5.1.0",
@@ -67,5 +71,8 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "overrides": {
+    "playwright-core": "$@playwright/test"
   }
 }
