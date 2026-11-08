@@ -18,6 +18,7 @@
     "watch": "ng build --watch --configuration development",
     "prei18n:extract": "npm run content",
     "i18n:extract": "ng extract-i18n",
+    "og": "node scripts/og/render-og.mts",
     "pretest": "npm run content:drafts",
     "test": "ng test --watch=false",
     "pretest:watch": "npm run content:drafts",
