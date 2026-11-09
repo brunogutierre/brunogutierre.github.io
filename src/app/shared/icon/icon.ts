@@ -8,7 +8,6 @@ export const ICON_NAMES = [
   'chevron',
   'dices',
   'external-link',
-  'gamepad',
   'github',
   'globe',
   'grid',
@@ -70,12 +69,6 @@ const FILLED: ReadonlySet<IconName> = new Set(['github', 'linkedin']);
           <path d="M15 3h6v6" />
           <path d="M10 14 21 3" />
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-        }
-        @case ('gamepad') {
-          <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01" />
-          <path
-            d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59l-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258l-.017-.151A4 4 0 0 0 17.32 5z"
-          />
         }
         @case ('globe') {
           <circle cx="12" cy="12" r="10" />

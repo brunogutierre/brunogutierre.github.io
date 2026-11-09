@@ -148,20 +148,6 @@ export const PROJECTS: readonly Project[] = [
       },
     ],
   },
-  {
-    id: 'project-yu',
-    name: 'Project Yu',
-    icon: 'gamepad',
-    inProgress: true,
-    summary: {
-      en: 'A side-scrolling platformer about a little Shih Tzu who gathers snacks on her way to bed and scares off cheeky squirrels with a bark.',
-      'pt-BR':
-        'Um jogo de plataforma em rolagem lateral sobre uma pequena Shih Tzu que recolhe petiscos a caminho da caminha e espanta esquilos travessos com um latido.',
-      fr: 'Un jeu de plateforme à défilement horizontal sur une petite Shih Tzu qui ramasse des friandises en route vers son panier et effraie des écureuils espiègles d’un aboiement.',
-    },
-    stack: ['Godot 4.6', 'GDScript'],
-    links: [{ kind: 'source', url: `${GITHUB}/ProjectYu` }],
-  },
 ];
 
 /** The Android version of Advanced Sudoku, published by Alt Cozy Games. */
