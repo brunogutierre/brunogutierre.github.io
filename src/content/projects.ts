@@ -113,14 +113,13 @@ export const PROJECTS: readonly Project[] = [
     id: 'bitpocket',
     name: 'BitPocket',
     icon: 'wallet',
-    inProgress: true,
     summary: {
-      en: 'A study Bitcoin wallet for Android with layered security: two pockets, a vault with inheritance and a duress PIN. Test networks only.',
+      en: 'A study Bitcoin wallet for Android with layered security: biometric signing, spending limits, a miniscript vault with inheritance, a duress PIN that opens a decoy wallet, and coin control. Test networks only.',
       'pt-BR':
-        'Uma carteira Bitcoin de estudo para Android com segurança em camadas: dois bolsos, um cofre com herança e um PIN de coação. Só em redes de teste.',
-      fr: 'Un portefeuille Bitcoin d’étude pour Android avec une sécurité en couches : deux poches, un coffre avec héritage et un code PIN de contrainte. Réseaux de test uniquement.',
+        'Uma carteira Bitcoin de estudo para Android com segurança em camadas: assinatura biométrica, limites de gasto, um cofre miniscript com herança, um PIN de coação que abre uma carteira de fachada e controle de moedas. Só em redes de teste.',
+      fr: 'Un portefeuille Bitcoin d’étude pour Android avec une sécurité en couches : signature biométrique, limites de dépense, un coffre miniscript avec héritage, un code PIN de contrainte qui ouvre un portefeuille leurre et contrôle des pièces. Réseaux de test uniquement.',
     },
-    stack: ['Kotlin', 'Jetpack Compose', 'Bitcoin Dev Kit'],
+    stack: ['Kotlin', 'Jetpack Compose', 'Bitcoin Dev Kit', 'Miniscript', 'Android Keystore'],
     links: [{ kind: 'source', url: `${GITHUB}/BitPocket` }],
   },
   {
