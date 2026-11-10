@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, DOCUMENT, inject } from '@angular/core';
-import { CV_SUMMARY, EDUCATION, JOBS, SKILLS, SPOKEN_LANGUAGES } from '../../../content/experience';
+import {
+  CV_SUMMARY,
+  EDUCATION,
+  JOBS,
+  SKILLS,
+  skillsIn,
+  SPOKEN_LANGUAGES,
+} from '../../../content/experience';
 import { PROFILE } from '../../../content/profile';
 import { absoluteUrl, CURRENT_LOCALE } from '../../core/i18n/locale';
 import { Icon } from '../../shared/icon/icon';
@@ -33,6 +40,7 @@ export class ExperiencePage {
   protected readonly summary = CV_SUMMARY;
   protected readonly jobs = JOBS;
   protected readonly skills = SKILLS;
+  protected readonly skillsIn = skillsIn;
   protected readonly education = EDUCATION;
   protected readonly languages = SPOKEN_LANGUAGES;
   protected readonly webLinks = [

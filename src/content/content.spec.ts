@@ -14,7 +14,7 @@ describe('site content', () => {
       ...PROJECTS.flatMap((p) => [p.summary, ...p.links.flatMap((l) => (l.part ? [l.part] : []))]),
       CV_SUMMARY,
       ...JOBS.flatMap((j) => [j.role, j.achievements, ...(j.companyNote ? [j.companyNote] : [])]),
-      ...SKILLS.map((s) => s.label),
+      ...SKILLS.flatMap((s) => ('en' in s.skills ? [s.label, s.skills] : [s.label])),
       ...EDUCATION.flatMap((d) => [d.title, d.school]),
       ...SPOKEN_LANGUAGES.flatMap((l) => [l.name, l.level]),
     ];

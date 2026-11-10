@@ -272,6 +272,8 @@ dd {
     max-inline-size: none;
   }
 
+  // a job never starts at the foot of a page and goes on in the next one
+  .job,
   .achievements li,
   .skill-group,
   .degrees li,

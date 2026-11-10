@@ -43,6 +43,10 @@ describe('ExperiencePage', () => {
     const root = render();
 
     expect(texts(root, '.skill-group h3')).toEqual(SKILLS.map((group) => group.label.fr));
+    // technology names as they are, descriptions in the current language
+    const groups = root.querySelectorAll('.skill-group');
+    expect(texts(groups[0], 'li')).toEqual(['Java', 'TypeScript', 'JavaScript', 'Python', 'SQL']);
+    expect(texts(groups[3], 'li')).toContain('Traitement de fichiers volumineux');
     expect(texts(root, '.degrees h3')).toEqual(EDUCATION.map((degree) => degree.title.fr));
     expect(text(root.querySelector('.degrees .period'))).toBe('2007 – 2008');
     expect(texts(root, '.spoken dt')).toEqual(['Anglais', 'Français', 'Portugais']);

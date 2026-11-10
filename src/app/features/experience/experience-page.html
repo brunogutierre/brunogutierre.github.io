@@ -65,7 +65,7 @@
         <div class="skill-group">
           <h3>{{ group.label[locale] }}</h3>
           <ul class="chips">
-            @for (skill of group.skills; track skill) {
+            @for (skill of skillsIn(group, locale); track skill) {
               <li>{{ skill }}</li>
             }
           </ul>

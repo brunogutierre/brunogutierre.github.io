@@ -1,4 +1,4 @@
-import type { Localized } from '../app/core/i18n/locale';
+import type { Locale, Localized } from '../app/core/i18n/locale';
 
 /** `YYYY-MM`, or `YYYY` when only the year matters. */
 export type YearMonth = `${number}` | `${number}-${number}`;
@@ -18,8 +18,13 @@ export interface Job {
 
 export interface SkillGroup {
   readonly label: Localized<string>;
-  readonly skills: readonly string[];
+  /** Technology names read the same in every language; descriptions are translated. */
+  readonly skills: readonly string[] | Localized<readonly string[]>;
 }
+
+/** The skills of a group in one language. */
+export const skillsIn = (group: SkillGroup, locale: Locale): readonly string[] =>
+  'en' in group.skills ? group.skills[locale] : group.skills;
 
 export interface Degree {
   readonly title: Localized<string>;
@@ -35,10 +40,10 @@ export interface SpokenLanguage {
 
 /** The CV summary: the lead of the experience page. */
 export const CV_SUMMARY: Localized<string> = {
-  en: 'Senior software engineer with 17+ years of experience across full-stack web development and enterprise system architecture, spanning healthcare, government, education, and geospatial domains. Full-stack background in Angular/TypeScript frontend and Java/Spring Boot backend, with recent specialization (2022–2026) in frontend architecture and design systems at scale. Track record modernizing legacy platforms, building reusable design systems, and delivering applications used by thousands to millions of end users. Strong collaborator in Agile teams, with hands-on experience in microservices, reactive state management, and automated testing.',
+  en: 'Senior software engineer with 17+ years of experience across full-stack web development and enterprise system architecture, spanning healthcare, government, education, and geospatial domains. Full-stack background in Angular/TypeScript frontend and Java/Spring Boot backend, with recent specialization (2022–2026) in frontend architecture and design systems at scale. Complementary experience in Python (automation, data and large-format image processing) and geoprocessing (GIS, georeferencing). Track record modernizing legacy platforms, building reusable design systems, and delivering applications used by thousands to millions of end users. Strong collaborator in Agile teams, with hands-on experience in microservices, reactive state management, and automated testing.',
   'pt-BR':
-    'Engenheiro de software sênior com mais de 17 anos de experiência em desenvolvimento web full-stack e arquitetura de sistemas corporativos, nas áreas de saúde, governo, educação e geoprocessamento. Experiência full-stack com Angular/TypeScript no frontend e Java/Spring Boot no backend, com especialização recente (2022–2026) em arquitetura frontend e design systems em escala. Histórico de modernização de plataformas legadas, criação de design systems reutilizáveis e entrega de aplicações usadas por milhares a milhões de pessoas. Colaborador ativo em times ágeis, com experiência prática em microsserviços, gerenciamento de estado reativo e testes automatizados.',
-  fr: 'Ingénieur logiciel senior cumulant plus de 17 ans d’expérience en développement web full-stack et en architecture de systèmes d’entreprise, dans les domaines de la santé, du secteur public, de l’éducation et de la géomatique. Expérience full-stack en Angular/TypeScript côté front-end et en Java/Spring Boot côté back-end, avec une spécialisation récente (2022–2026) en architecture front-end et en design systems à grande échelle. Parcours marqué par la modernisation de plateformes existantes, la création de design systems réutilisables et la livraison d’applications utilisées par des milliers, voire des millions de personnes. Solide expérience du travail en équipe agile, des microservices, de la gestion d’état réactive et des tests automatisés.',
+    'Engenheiro de software sênior com mais de 17 anos de experiência em desenvolvimento web full-stack e arquitetura de sistemas corporativos, nas áreas de saúde, governo, educação e geoprocessamento. Experiência full-stack com Angular/TypeScript no frontend e Java/Spring Boot no backend, com especialização recente (2022–2026) em arquitetura frontend e design systems em escala. Experiência complementar em Python (automação, processamento de dados e de imagens de grande formato) e em geoprocessamento (SIG, georreferenciamento). Histórico de modernização de plataformas legadas, criação de design systems reutilizáveis e entrega de aplicações usadas por milhares a milhões de pessoas. Colaborador ativo em times ágeis, com experiência prática em microsserviços, gerenciamento de estado reativo e testes automatizados.',
+  fr: 'Ingénieur logiciel senior cumulant plus de 17 ans d’expérience en développement web full-stack et en architecture de systèmes d’entreprise, dans les domaines de la santé, du secteur public, de l’éducation et de la géomatique. Expérience full-stack en Angular/TypeScript côté front-end et en Java/Spring Boot côté back-end, avec une spécialisation récente (2022–2026) en architecture front-end et en design systems à grande échelle. Expérience complémentaire en Python (automatisation, traitement de données et d’images grand format) et en géotraitement (SIG, géoréférencement). Parcours marqué par la modernisation de plateformes existantes, la création de design systems réutilisables et la livraison d’applications utilisées par des milliers, voire des millions de personnes. Solide expérience du travail en équipe agile, des microservices, de la gestion d’état réactive et des tests automatisés.',
 };
 
 /** Newest first. */
@@ -46,9 +51,9 @@ export const JOBS: readonly Job[] = [
   {
     id: 'petal',
     role: {
-      en: 'Senior Frontend Developer',
-      'pt-BR': 'Desenvolvedor Frontend Sênior',
-      fr: 'Développeur front-end senior',
+      en: 'Senior Software Engineer',
+      'pt-BR': 'Engenheiro de Software Sênior',
+      fr: 'Ingénieur logiciel senior',
     },
     company: 'Petal',
     start: '2022-09',
@@ -56,36 +61,39 @@ export const JOBS: readonly Job[] = [
     achievements: {
       en: [
         'Contributed to the evolution of healthcare platforms used daily by thousands of healthcare professionals and administrative staff across Canada.',
+        'Contributed to cross-cutting architectural decisions for a medical scheduling platform, drawing on earlier backend and full-stack experience.',
         'Played a key role in modernizing the frontend architecture, contributing to the transition from a monolithic application model to a scalable micro-frontend ecosystem.',
         'Helped design and implement an enterprise Design System adopted across three major product teams, delivering more than 50 reusable Web Components and improving consistency, maintainability, and development efficiency.',
-        'Adopted modern Angular patterns — Signals, standalone components, and the new control flow syntax (@if/@for) — to simplify reactivity and reduce boilerplate across the design system and core scheduling features.',
         'Collaborated on architectural decisions, solution design, effort estimation, and peer code reviews, helping maintain high engineering standards across multiple teams.',
         'Developed complex Angular and NgRx features supporting critical scheduling and workflow management processes in healthcare environments.',
         'Contributed to maintaining automated testing standards exceeding 90% code coverage through Cypress-based end-to-end testing and quality-focused development practices.',
         'Used Cursor AI extensively for test generation, documentation, code analysis, and validation, improving development speed and code quality.',
         'Improved application reliability and production visibility through proactive monitoring and issue detection using Sentry.',
+        'Developed Python scripts to automate reading and organizing large data files.',
       ],
       'pt-BR': [
         'Contribuí para a evolução de plataformas de saúde usadas diariamente por milhares de profissionais de saúde e equipes administrativas em todo o Canadá.',
+        'Contribuí para decisões de arquitetura transversais de uma plataforma de agendamento médico, aproveitando minha experiência anterior em backend e full-stack.',
         'Tive papel central na modernização da arquitetura frontend, contribuindo para a transição de uma aplicação monolítica para um ecossistema escalável de micro-frontends.',
         'Ajudei a projetar e implementar um design system corporativo adotado por três grandes times de produto, com mais de 50 Web Components reutilizáveis, melhorando a consistência, a manutenção e a produtividade do desenvolvimento.',
-        'Adotei padrões modernos do Angular — Signals, componentes standalone e a nova sintaxe de control flow (@if/@for) — para simplificar a reatividade e reduzir código repetitivo no design system e nas principais funcionalidades de agendamento.',
         'Colaborei em decisões de arquitetura, desenho de soluções, estimativas de esforço e revisões de código entre pares, ajudando a manter padrões altos de engenharia em vários times.',
         'Desenvolvi funcionalidades complexas com Angular e NgRx para processos críticos de agendamento e gestão de fluxos de trabalho em ambientes de saúde.',
         'Contribuí para manter padrões de testes automatizados acima de 90% de cobertura de código, com testes end-to-end em Cypress e práticas de desenvolvimento focadas em qualidade.',
         'Usei o Cursor AI extensivamente para gerar testes, documentação, análise e validação de código, aumentando a velocidade de desenvolvimento e a qualidade do código.',
         'Melhorei a confiabilidade das aplicações e a visibilidade em produção com monitoramento proativo e detecção de problemas usando o Sentry.',
+        'Desenvolvi scripts em Python para automatizar a leitura e a organização de arquivos de dados volumosos.',
       ],
       fr: [
         'Contribution à l’évolution de plateformes de santé utilisées chaque jour par des milliers de professionnels de la santé et d’employés administratifs partout au Canada.',
+        'Participation aux décisions d’architecture transversales d’une plateforme de planification médicale, en s’appuyant sur une expérience antérieure en back-end et en full-stack.',
         'Rôle clé dans la modernisation de l’architecture front-end et dans la transition d’une application monolithique vers un écosystème de micro-frontends évolutif.',
         'Participation à la conception et à la mise en œuvre d’un design system d’entreprise adopté par trois grandes équipes produit : plus de 50 Web Components réutilisables, pour plus de cohérence, une maintenance plus simple et un développement plus efficace.',
-        'Adoption des patterns modernes d’Angular — Signals, composants standalone et nouvelle syntaxe de control flow (@if/@for) — pour simplifier la réactivité et réduire le code répétitif dans le design system et les principales fonctionnalités de planification.',
         'Participation aux décisions d’architecture, à la conception de solutions, à l’estimation des efforts et aux revues de code entre pairs, pour maintenir des standards d’ingénierie élevés dans plusieurs équipes.',
         'Développement de fonctionnalités complexes en Angular et NgRx pour des processus critiques de planification et de gestion des flux de travail en milieu de santé.',
         'Maintien de standards de tests automatisés au-delà de 90 % de couverture de code, avec des tests de bout en bout Cypress et des pratiques de développement axées sur la qualité.',
         'Utilisation intensive de Cursor AI pour générer des tests, rédiger la documentation, analyser et valider le code, ce qui a accéléré le développement et amélioré la qualité du code.',
         'Amélioration de la fiabilité des applications et de la visibilité en production grâce à une surveillance proactive et à la détection des incidents avec Sentry.',
+        'Développement de scripts Python pour automatiser la lecture et l’organisation de fichiers de données volumineux.',
       ],
     },
     stack: [
@@ -97,6 +105,7 @@ export const JOBS: readonly Job[] = [
       'Web Components',
       'Design Tokens',
       'Nx Monorepo',
+      'Python',
       'Cypress',
       'Sentry',
       'GitLab CI',
@@ -128,6 +137,7 @@ export const JOBS: readonly Job[] = [
         'Participated in Agile teams of approximately 15 developers delivering high-availability public sector solutions under strict security and compliance requirements.',
         'Contributed to migrating legacy government applications toward modern web architectures, improving maintainability, responsiveness, and long-term scalability.',
         'Developed cloud-ready microservices that reduced system dependencies and facilitated incremental modernization of legacy federal platforms.',
+        'Automated interaction with HTML web interfaces in Python to extract, filter, and format the relevant data.',
       ],
       'pt-BR': [
         'Desenvolvi e modernizei sistemas governamentais de missão crítica que atendem milhões de cidadãos brasileiros e milhares de servidores federais.',
@@ -137,6 +147,7 @@ export const JOBS: readonly Job[] = [
         'Participei de times ágeis de cerca de 15 desenvolvedores, entregando soluções de alta disponibilidade para o setor público sob requisitos rígidos de segurança e conformidade.',
         'Contribuí para migrar aplicações governamentais legadas para arquiteturas web modernas, melhorando a manutenção, o tempo de resposta e a escalabilidade a longo prazo.',
         'Desenvolvi microsserviços prontos para a nuvem que reduziram dependências entre sistemas e facilitaram a modernização gradual de plataformas federais legadas.',
+        'Automatizei em Python a interação com interfaces web HTML para extrair, filtrar e formatar os dados úteis.',
       ],
       fr: [
         'Développement et modernisation de systèmes gouvernementaux critiques au service de millions de citoyens brésiliens et de milliers de fonctionnaires fédéraux.',
@@ -146,6 +157,7 @@ export const JOBS: readonly Job[] = [
         'Travail au sein d’équipes agiles d’environ 15 développeurs, livrant des solutions à haute disponibilité pour le secteur public sous des exigences strictes de sécurité et de conformité.',
         'Contribution à la migration d’applications gouvernementales existantes vers des architectures web modernes, pour une maintenance plus simple, une meilleure réactivité et une évolutivité à long terme.',
         'Développement de microservices prêts pour l’infonuagique qui ont réduit les dépendances entre systèmes et facilité la modernisation progressive de plateformes fédérales existantes.',
+        'Automatisation en Python de l’interaction avec des interfaces web HTML pour en extraire, filtrer et mettre en forme les données utiles.',
       ],
     },
     stack: [
@@ -156,6 +168,7 @@ export const JOBS: readonly Job[] = [
       'Spring Boot',
       'J2EE',
       'Ionic',
+      'Python',
       'PostgreSQL',
       'Jenkins',
       'Cypress',
@@ -176,22 +189,29 @@ export const JOBS: readonly Job[] = [
     achievements: {
       en: [
         'Designed and developed education management platforms supporting approximately 200 public schools across multiple municipalities, serving more than 10,000 students, educators, and administrators.',
+        'Designed and built a Python pipeline that generates very large map images (over 15,000 × 30,000 pixels, printed at more than 2 m × 1 m), overlaying dynamically generated icons on satellite imagery.',
+        'Automated the placement of schools and hospitals on the imagery from their georeferenced coordinates.',
         'Implemented geospatial mapping and route optimization solutions, integrating OpenStreetMap, Google Maps, and GeoServer to improve school transportation planning for municipal governments.',
         'Developed one of the region’s early hybrid mobile solutions, extending access to educational services across desktop and mobile devices.',
       ],
       'pt-BR': [
         'Projetei e desenvolvi plataformas de gestão educacional para cerca de 200 escolas públicas em vários municípios, atendendo mais de 10.000 alunos, educadores e gestores.',
+        'Projetei e desenvolvi em Python um pipeline que gera imagens cartográficas de grande formato (mais de 15.000 × 30.000 pixels, impressas com mais de 2 m × 1 m), sobrepondo ícones gerados dinamicamente a imagens de satélite.',
+        'Automatizei o posicionamento de escolas e hospitais nas imagens a partir das suas coordenadas georreferenciadas.',
         'Implementei soluções de mapeamento geoespacial e otimização de rotas, integrando OpenStreetMap, Google Maps e GeoServer para melhorar o planejamento do transporte escolar das prefeituras.',
         'Desenvolvi uma das primeiras soluções mobile híbridas da região, levando os serviços educacionais para computadores e dispositivos móveis.',
       ],
       fr: [
         'Conception et développement de plateformes de gestion scolaire pour environ 200 écoles publiques dans plusieurs municipalités, au service de plus de 10 000 élèves, enseignants et administrateurs.',
+        'Conception et développement en Python d’une chaîne de génération d’images cartographiques de très grand format (plus de 15 000 × 30 000 pixels, imprimées à plus de 2 m × 1 m), superposant à l’imagerie satellite des icônes générées dynamiquement.',
+        'Automatisation du placement des écoles et des hôpitaux sur l’imagerie à partir de leurs coordonnées géoréférencées.',
         'Mise en œuvre de solutions de cartographie géospatiale et d’optimisation d’itinéraires, intégrant OpenStreetMap, Google Maps et GeoServer pour améliorer la planification du transport scolaire des municipalités.',
         'Développement de l’une des premières solutions mobiles hybrides de la région, donnant accès aux services éducatifs sur ordinateur et sur mobile.',
       ],
     },
     stack: [
       'Java',
+      'Python',
       'Struts',
       'Hibernate',
       'JavaScript',
@@ -204,29 +224,119 @@ export const JOBS: readonly Job[] = [
       'Jenkins',
     ],
   },
+  {
+    id: 'ibope',
+    role: {
+      en: 'Junior Programmer',
+      'pt-BR': 'Programador Júnior',
+      fr: 'Programmeur junior',
+    },
+    company: 'IBOPE Inteligência',
+    companyNote: {
+      en: 'Market research and opinion polling',
+      'pt-BR': 'Pesquisa de mercado e de opinião',
+      fr: 'Études de marché et sondages d’opinion',
+    },
+    start: '2007',
+    end: '2008',
+    achievements: {
+      en: [
+        'Developed web and mobile survey systems (MVC architecture) for opinion and market research.',
+        'Built the mobile client in J2ME, the Java platform for devices with limited memory and processing power.',
+      ],
+      'pt-BR': [
+        'Desenvolvi sistemas de pesquisa web e mobile (arquitetura MVC) para pesquisas de opinião e de mercado.',
+        'Desenvolvi a parte mobile em J2ME, a plataforma Java para dispositivos com memória e processamento limitados.',
+      ],
+      fr: [
+        'Développement de systèmes de sondage web et mobiles (architecture MVC) pour la recherche d’opinion et de marché.',
+        'Développement du volet mobile en J2ME, la plateforme Java pour les appareils à mémoire et à puissance de calcul limitées.',
+      ],
+    },
+    stack: ['Java', 'J2EE', 'J2ME', 'JavaScript', 'HTML', 'Oracle'],
+  },
+  {
+    id: 'lactec',
+    role: {
+      en: 'Programming Intern',
+      'pt-BR': 'Estagiário de Programação',
+      fr: 'Programmeur stagiaire',
+    },
+    company: 'Lactec',
+    companyNote: {
+      en: 'Institute of Technology for Development',
+      'pt-BR': 'Instituto de Tecnologia para o Desenvolvimento',
+      fr: 'Institut de technologie pour le développement',
+    },
+    start: '2005',
+    end: '2006',
+    achievements: {
+      en: [
+        'Developed geoprocessing modules in C# for GIS applications (ArcGIS), focused on georeferencing.',
+      ],
+      'pt-BR': [
+        'Desenvolvi em C# módulos de geoprocessamento para aplicações SIG (ArcGIS), com foco em georreferenciamento.',
+      ],
+      fr: [
+        'Développement en C# de modules de géotraitement pour des applications SIG (ArcGIS), axés sur le géoréférencement.',
+      ],
+    },
+    stack: ['C#', '.NET', 'ArcGIS', 'Oracle'],
+  },
 ];
 
 export const SKILLS: readonly SkillGroup[] = [
   {
+    label: {
+      en: 'Programming languages',
+      'pt-BR': 'Linguagens de programação',
+      fr: 'Langages de programmation',
+    },
+    skills: ['Java', 'TypeScript', 'JavaScript', 'Python', 'SQL'],
+  },
+  {
+    label: { en: 'Backend', 'pt-BR': 'Backend', fr: 'Back-end' },
+    skills: [
+      'Java',
+      'Spring Boot',
+      'J2EE',
+      '.NET',
+      'Node.js',
+      'REST APIs',
+      'GraphQL',
+      'Microservices',
+    ],
+  },
+  {
     label: { en: 'Frontend', 'pt-BR': 'Frontend', fr: 'Front-end' },
     skills: [
-      'Angular',
-      'Angular Signals',
+      'Angular (Signals, Standalone, Control Flow)',
       'TypeScript',
-      'JavaScript',
       'RxJS',
       'NgRx',
       'AngularJS',
-      'HTML5',
-      'CSS3',
-      'Sass/SCSS',
+      'SCSS',
       'Web Components',
       'StencilJS',
     ],
   },
   {
-    label: { en: 'Backend', 'pt-BR': 'Backend', fr: 'Back-end' },
-    skills: ['Java', 'Spring Boot', 'J2EE', 'REST APIs', 'Microservices'],
+    label: { en: 'Python and data', 'pt-BR': 'Python e dados', fr: 'Python et données' },
+    skills: {
+      en: ['Automation', 'Web scraping', 'Large-file processing', 'Large-format image generation'],
+      'pt-BR': [
+        'Automação',
+        'Web scraping',
+        'Processamento de arquivos volumosos',
+        'Geração de imagens de grande formato',
+      ],
+      fr: [
+        'Automatisation',
+        'Scraping web',
+        'Traitement de fichiers volumineux',
+        'Génération d’images grand format',
+      ],
+    },
   },
   {
     label: { en: 'Testing and quality', 'pt-BR': 'Testes e qualidade', fr: 'Tests et qualité' },
@@ -251,10 +361,6 @@ export const SKILLS: readonly SkillGroup[] = [
   {
     label: { en: 'Databases', 'pt-BR': 'Bancos de dados', fr: 'Bases de données' },
     skills: ['PostgreSQL', 'Oracle', 'MongoDB'],
-  },
-  {
-    label: { en: 'Other', 'pt-BR': 'Outros', fr: 'Autres' },
-    skills: ['GraphQL', 'Node.js'],
   },
 ];
 

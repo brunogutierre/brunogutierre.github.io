@@ -220,7 +220,8 @@ page, so the CV is always the same as the site and exists in each language.
 - "Print or save as PDF" calls `window.print()`. Ctrl+P works the same way.
 - Print styles (`src/styles/_print.scss`, plus the page's own `@media print` block) hide the
   site header and footer, force light colors, show name and contacts on top (`.print-only`) and
-  turn chips into comma-separated lines. The CV fits on two pages in A4 and Letter.
+  turn chips into comma-separated lines. The CV takes three pages in A4 and Letter, and a job is
+  never split between two pages.
 - During printing, the document title becomes "Bruno Gutierre - CV" (`beforeprint` /
   `afterprint`), so the PDF gets a useful file name.
 
