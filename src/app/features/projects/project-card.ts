@@ -60,6 +60,7 @@ const LINKS: Readonly<Record<ProjectLinkKind, { label: string; icon: IconName }>
   styles: `
     :host {
       display: block;
+      block-size: 100%;
     }
 
     article {
