@@ -89,10 +89,11 @@ Decisions:
 - **Content in the repository.** Profile, projects, CV and posts are files, reviewed in pull
   requests and checked by the tests and the build. Rejected: fetching projects from the GitHub
   API, a runtime dependency whose content no test sees.
-- **The domain is shared.** `brunogutierre.github.io` also serves `/AdvancedSudoku/` from another
-  repository and the Android app links file (see [Android App Links](#android-app-links)). So:
-  no service worker, browser storage keys prefixed `bgsite:v1:`, and a dist check that fails if
-  the build would publish anything under `/AdvancedSudoku/`.
+- **The domain is shared.** `brunogutierre.github.io` also serves `/AdvancedSudoku/` and
+  `/Tessera/` from other repositories, and the Android app links file (see
+  [Android App Links](#android-app-links)). So: no service worker, browser storage keys prefixed
+  `bgsite:v1:`, and a dist check that fails if the build would publish anything under those
+  paths.
 
 ## Development
 
@@ -184,7 +185,8 @@ The site is built once per language with `@angular/localize`:
 - an HTML file declares the wrong `lang`, or a page is a meta-refresh redirect stub;
 - any internal link, hreflang URL, asset or link preview image, or any link of a language's feed,
   does not resolve to a served file;
-- a folder would shadow `/AdvancedSudoku/` (published on this domain by another repository).
+- a folder would shadow `/AdvancedSudoku/` or `/Tessera/` (published on this domain by other
+  repositories).
 
 ## Content
 
@@ -344,7 +346,7 @@ language or the post), and `SeoService` writes it into the prerendered HTML:
 | Structured data       | JSON-LD: `Person` on the home page, `BlogPosting` on posts                                                         |
 | Atom feed             | `/feed.xml`, `/pt/feed.xml`, `/fr/feed.xml`: full posts, written by `npm run content`, linked from every page head |
 | `sitemap.xml`         | Written by `postbuild.mjs` from the prerendered pages: canonical URLs, their alternates, post dates                |
-| `robots.txt`          | `site-root/`: the whole domain may be crawled, `/AdvancedSudoku/` included                                         |
+| `robots.txt`          | `site-root/`: the whole domain may be crawled, other projects' paths included                                      |
 
 The link preview images are rendered from [`scripts/og/og-image.html`](scripts/og/og-image.html)
 (name, job title and photo on the hero gradient; the language comes from the URL hash: `#en`,
