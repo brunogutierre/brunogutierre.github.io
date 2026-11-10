@@ -5,7 +5,7 @@
 // - every internal reference (links, canonical/hreflang URLs, scripts, styles, images, the link
 //   preview image) resolves to a file GitHub Pages will serve, so a missing translation or chunk
 //   cannot ship; so does every link of each language's Atom feed;
-// - nothing shadows /AdvancedSudoku/, which another repository publishes on this domain.
+// - nothing shadows /AdvancedSudoku/ or /Tessera/, which other repositories publish on this domain.
 //
 // Usage: node scripts/check-dist.mjs <site-dir>
 
@@ -19,7 +19,7 @@ export const SITE_ORIGIN = 'https://brunogutierre.github.io';
 export const LOCALE_DIRS = { '': 'en', pt: 'pt-BR', fr: 'fr' };
 
 /** Paths on this domain published by other repositories. */
-export const FOREIGN_PATHS = ['/AdvancedSudoku/'];
+export const FOREIGN_PATHS = ['/AdvancedSudoku/', '/Tessera/'];
 
 const REFERENCE_TAG = /<(?:a|link|script|img|source)\b[^>]*>/gi;
 const REFERENCE_ATTR = /\s(?:href|src)="([^"]*)"/gi;

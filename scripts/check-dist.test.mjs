@@ -53,6 +53,7 @@ describe('helpers', () => {
     assert.equal(toSitePath('mailto:a@b.c', '/'), null);
     assert.equal(toSitePath('#main', '/'), null);
     assert.equal(toSitePath('/AdvancedSudoku/', '/'), null);
+    assert.equal(toSitePath('/Tessera/', '/'), null);
   });
 
   it('serves folders only with a trailing slash, like GitHub Pages without a redirect', () => {

@@ -123,6 +123,29 @@ export const PROJECTS: readonly Project[] = [
     links: [{ kind: 'source', url: `${GITHUB}/BitPocket` }],
   },
   {
+    id: 'tessera',
+    name: 'Tessera',
+    icon: 'layers',
+    summary: {
+      en: 'An Angular design system: 33 accessible components and three themes (Enterprise, Fintech and Care), each in light and dark. Built on design tokens and headless accessibility primitives, documented and tested in Storybook.',
+      'pt-BR':
+        'Um design system em Angular: 33 componentes acessíveis e três temas (Enterprise, Fintech e Care), cada um com modo claro e escuro. Feito sobre design tokens e primitivas de acessibilidade headless, documentado e testado no Storybook.',
+      fr: 'Un design system Angular : 33 composants accessibles et trois thèmes (Enterprise, Fintech et Care), chacun en mode clair et sombre. Bâti sur des design tokens et des primitives d’accessibilité headless, documenté et testé dans Storybook.',
+    },
+    stack: [
+      'Angular 22',
+      'Design Tokens',
+      '@angular/aria',
+      'Angular CDK',
+      'Storybook',
+      'Playwright',
+    ],
+    links: [
+      { kind: 'live', url: 'https://brunogutierre.github.io/Tessera/' },
+      { kind: 'source', url: `${GITHUB}/Tessera` },
+    ],
+  },
+  {
     id: 'mtg-to-rpg',
     name: 'MTG to RPG',
     icon: 'dices',
