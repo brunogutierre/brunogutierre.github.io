@@ -58,7 +58,7 @@
     "android.title": "{$INTERPOLATION} for Android",
     "android.cta": "Get the app",
     "projects.link.live": "Live demo",
-    "projects.link.package": "npm package",
+    "projects.link.package": "{$registry} package",
     "projects.link.source": "Source code",
     "projects.rewriteOf": " Rewrite of {$START_LINK}{$INTERPOLATION}{$CLOSE_LINK}, a study project from {$INTERPOLATION_1}. ",
     "projects.lead": " Projects I build to learn new tools and to show how I work. All of them are open source. ",

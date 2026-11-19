@@ -1,13 +1,21 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { Project, ProjectLinkKind, PROJECTS } from '../../../content/projects';
+import { Project, ProjectLink, PROJECTS } from '../../../content/projects';
 import { CURRENT_LOCALE } from '../../core/i18n/locale';
 import { Icon, IconName } from '../../shared/icon/icon';
 
-const LINKS: Readonly<Record<ProjectLinkKind, { label: string; icon: IconName }>> = {
-  live: { label: $localize`:@@projects.link.live:Live demo`, icon: 'external-link' },
-  package: { label: $localize`:@@projects.link.package:npm package`, icon: 'package' },
-  source: { label: $localize`:@@projects.link.source:Source code`, icon: 'github' },
-};
+function linkLabel(link: ProjectLink): { label: string; icon: IconName } {
+  switch (link.kind) {
+    case 'live':
+      return { label: $localize`:@@projects.link.live:Live demo`, icon: 'external-link' };
+    case 'package':
+      return {
+        label: $localize`:@@projects.link.package:${link.registry}:registry: package`,
+        icon: 'package',
+      };
+    case 'source':
+      return { label: $localize`:@@projects.link.source:Source code`, icon: 'github' };
+  }
+}
 
 /**
  * One project: a gradient cover with its icon and sheet number, then the summary, the stack and
@@ -156,7 +164,7 @@ export class ProjectCard {
   protected readonly angle = computed(() => 125 + ((PROJECTS.indexOf(this.project()) * 23) % 60));
   protected readonly links = computed(() =>
     this.project().links.map((link) => ({
-      ...LINKS[link.kind],
+      ...linkLabel(link),
       url: link.url,
       part: link.part?.[this.locale],
     })),

@@ -52,4 +52,15 @@ describe('ProjectCard', () => {
     expect(text(links[0])).toBe('Source code (front-end) · MTG to RPG');
     expect(root.querySelector('.origin')).toBeNull();
   });
+
+  it('names the registry a package is published on', () => {
+    const labels = (id: string) =>
+      Array.from(render(byId(id)).querySelectorAll('.links a'), text).filter((label) =>
+        label?.includes('package'),
+      );
+
+    expect(labels('recordbridge')).toEqual(['Maven Central package · RecordBridge']);
+    TestBed.resetTestingModule();
+    expect(labels('angular-mapper')).toEqual(['npm package · AngularMapper']);
+  });
 });

@@ -45,8 +45,8 @@ describe('HomePage', () => {
 
     expect(Array.from(featured.querySelectorAll('app-project-card h3'), text)).toEqual([
       'Advanced Sudoku',
-      'PokeRol',
-      'AngularMapper',
+      'Tessera',
+      'RecordBridge',
     ]);
     expect(featured.querySelector('app-android-app-card')).not.toBeNull();
     expect(featured.querySelector('.all-link')?.getAttribute('href')).toBe('/projects');
