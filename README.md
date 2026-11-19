@@ -89,8 +89,9 @@ Decisions:
 - **Content in the repository.** Profile, projects, CV and posts are files, reviewed in pull
   requests and checked by the tests and the build. Rejected: fetching projects from the GitHub
   API, a runtime dependency whose content no test sees.
-- **The domain is shared.** `brunogutierre.github.io` also serves `/AdvancedSudoku/` and
-  `/Tessera/` from other repositories, and the Android app links file (see
+- **The domain is shared.** `brunogutierre.github.io` also serves `/AdvancedSudoku/`,
+  `/Tessera/`, `/TesseraThemes/` and `/hire-gts-quebec/` from other repositories, and the
+  Android app links file (see
   [Android App Links](#android-app-links)). So: no service worker, browser storage keys prefixed
   `bgsite:v1:`, and a dist check that fails if the build would publish anything under those
   paths.
@@ -185,8 +186,8 @@ The site is built once per language with `@angular/localize`:
 - an HTML file declares the wrong `lang`, or a page is a meta-refresh redirect stub;
 - any internal link, hreflang URL, asset or link preview image, or any link of a language's feed,
   does not resolve to a served file;
-- a folder would shadow `/AdvancedSudoku/` or `/Tessera/` (published on this domain by other
-  repositories).
+- a folder would shadow a path another repository publishes on this domain (`FOREIGN_PATHS`:
+  `/AdvancedSudoku/`, `/Tessera/`, `/TesseraThemes/`, `/hire-gts-quebec/`).
 
 ## Content
 

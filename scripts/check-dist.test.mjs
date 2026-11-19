@@ -54,6 +54,8 @@ describe('helpers', () => {
     assert.equal(toSitePath('#main', '/'), null);
     assert.equal(toSitePath('/AdvancedSudoku/', '/'), null);
     assert.equal(toSitePath('/Tessera/', '/'), null);
+    assert.equal(toSitePath('/TesseraThemes/', '/'), null);
+    assert.equal(toSitePath('/hire-gts-quebec/fr/', '/'), null);
   });
 
   it('serves folders only with a trailing slash, like GitHub Pages without a redirect', () => {
