@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 export const ICON_NAMES = [
   'arrow-left',
+  'arrow-left-right',
   'arrow-right',
   'book-open',
   'braces',
@@ -19,6 +20,7 @@ export const ICON_NAMES = [
   'package',
   'printer',
   'smartphone',
+  'sparkles',
   'sun',
   'wallet',
 ] as const;
@@ -56,6 +58,9 @@ const FILLED: ReadonlySet<IconName> = new Set(['github', 'linkedin']);
           <path
             d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"
           />
+        }
+        @case ('arrow-left-right') {
+          <path d="M8 3 4 7l4 4M4 7h16m-4 14 4-4-4-4m4 4H4" />
         }
         @case ('braces') {
           <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1" />
@@ -104,6 +109,12 @@ const FILLED: ReadonlySet<IconName> = new Set(['github', 'linkedin']);
         @case ('smartphone') {
           <rect x="5" y="2" width="14" height="20" rx="2" />
           <path d="M12 18h.01" />
+        }
+        @case ('sparkles') {
+          <path
+            d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"
+          />
+          <path d="M20 3v4M22 5h-4M4 17v2M5 18H3" />
         }
         @case ('wallet') {
           <path
